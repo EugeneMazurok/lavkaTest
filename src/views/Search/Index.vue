@@ -131,6 +131,7 @@ onActivated(async () => {
 
 onDeactivated(() => {
     webapp.offEvent('backButtonClicked', back)
+    window.localStorage.removeItem('search')
     webapp.BackButton.hide()
 })
 
