@@ -130,7 +130,7 @@ onMounted(async () => {
 })
 
 const checkScroll = () => {
-  loading.value = true
+  loading.value = !ended.value;
   if (scrollableElement.value) {
     const scrollTop = scrollableElement.value.scrollTop
     const clientHeight = scrollableElement.value.clientHeight
@@ -144,6 +144,7 @@ const checkScroll = () => {
       }
     }
   }
+  console.log(ended.value)
 }
 
 const ended = ref(false)
