@@ -67,7 +67,16 @@ const logCurrentScrollPosition = () => {
 }
 
 onActivated(() => {
-    scrollDown(scrollableElement, currentScrollPosition)
+  let savedTab = window.localStorage.getItem('activeTab')
+  if (savedTab) {
+    activeTab.value = JSON.parse(savedTab)
+  } else {
+    activeTab.value = tabs[0]
+  }
+  console.log(activeTab)
+
+  loading.value = false
+  scrollDown(scrollableElement, currentScrollPosition)
 })
 
 </script>

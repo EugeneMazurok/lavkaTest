@@ -120,19 +120,28 @@ onDeactivated(() => {
 })
 
 onMounted(async () => {
+  loading.value = false
   const activeTab = window.localStorage.getItem('activeTab')
   if (activeTab) {
     platform.value = JSON.parse(activeTab).platform
   }
   games.value = await getGames()
   await getStartParams()
-  loading.value = false
 })
 
 const checkScroll = () => {
-  if (scrollableElement.value.scrollTop + scrollableElement.value.clientHeight >= scrollableElement.value.scrollHeight - 30) {
-    if (!loading.value) {
-      refreshHandler()
+  loading.value = true
+  if (scrollableElement.value) {
+    const scrollTop = scrollableElement.value.scrollTop
+    const clientHeight = scrollableElement.value.clientHeight
+    const scrollHeight = scrollableElement.value.scrollHeight
+
+    const distanceToEnd = scrollHeight - (scrollTop + clientHeight)
+
+    if (distanceToEnd < 300) {
+      if (loading.value && !ended.value) {
+        refreshHandler()
+      }
     }
   }
 }
