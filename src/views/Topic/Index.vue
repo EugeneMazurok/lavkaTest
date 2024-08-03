@@ -9,6 +9,7 @@ import Header from '../../components/Header.vue'
 import { Icon } from '@iconify/vue'
 import scrollDown from "../../utils/scrollDown.js";
 import { debounce } from "lodash";
+import Loader from "../../components/Loader.vue";
 
 const webapp = window.Telegram.WebApp
 
@@ -34,7 +35,7 @@ const animating = ref(false);
 
 const page = ref(1)
 const pageSize = ref(50)
-
+const firstLoad = ref(true)
 const sort = reactive({
   price: false,
   title: false
@@ -54,8 +55,6 @@ const getStartParams = async () => {
 }
 
 const getGames = async () => {
-  loading.value = true;
-
   let filter;
   let sortParam = [];
 
@@ -91,10 +90,9 @@ const getGames = async () => {
     if (response && response.length < pageSize.value) {
       ended.value = true;
     }
-    console.log(response)
+    firstLoad.value = false;
     return response;
   } catch (error) {
-    console.error('Error fetching games:', error);
     loading.value = false;
     throw error;
   }
@@ -122,7 +120,6 @@ onDeactivated(() => {
 })
 
 onMounted(async () => {
-  loading.value = true
   const activeTab = window.localStorage.getItem('activeTab')
   if (activeTab) {
     platform.value = JSON.parse(activeTab).platform
@@ -157,21 +154,17 @@ const refreshHandler = async () => {
 };
 
 function sortProducts() {
-  // Сброс страницы на 1 и очищаем текущее состояние списка игр
   page.value = 1
   ended.value = false
-
-  // Устанавливаем флаг анимации
+  loading.value = true
   animating.value = true
 
-  // Загрузка игр с новым порядком сортировки
   getGames().then(newGames => {
-    tempGames.value = newGames // Временно храним новые игры
-    sortGames() // Сортируем игры
-    games.value = [...tempGames.value] // Обновляем отображение списка игр
-    loading.value = false // Отключаем индикатор загрузки
+    tempGames.value = newGames
+    sortGames()
+    games.value = [...tempGames.value]
+    loading.value = false
 
-    // Убираем флаг анимации только после завершения обновления игр
     animating.value = false
   })
 }
@@ -224,6 +217,9 @@ function sortGames() {
                 </button>
             </div>
 
+      <transition name="fade">
+        <Loader v-if="firstLoad" position="fixed"/>
+      </transition>
         <transition name="fade">
             <div v-if="games && games.length > 0 " :class="['flex flex-col gap-y-2']">
                 <h3 class="px-4 font-medium text-lg">
@@ -277,11 +273,9 @@ function sortGames() {
             </div>
         </transition>
 
-        <transition name="fade">
-            <div v-if="loading" class="grid grid-cols-2 gap-4 p-4">
-                <div v-for="el in 3" class="flex flex-col h-52 bg-hint_bg_color animate-pulse rounded-xl overflow-clip w-full" />
-            </div>
-        </transition>
+      <transition name="fade">
+        <Loader v-if="loading" position="inline"/>
+      </transition>
     </main>
 </template>
 
