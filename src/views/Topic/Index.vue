@@ -10,9 +10,12 @@ import { Icon } from '@iconify/vue'
 import scrollDown from "../../utils/scrollDown.js";
 import { debounce } from "lodash";
 import Loader from "../../components/Loader.vue";
+import UpButton from "../../components/UpButton.vue";
+import scrollTop from "../../utils/scrollTop.js";
 
 const webapp = window.Telegram.WebApp
 
+const route = useRoute()
 const router = useRouter()
 
 const back = () => {
@@ -23,8 +26,6 @@ const back = () => {
   }
 }
 
-const route = useRoute()
-
 const client = createDirectus(config.DIRECTUS.API).with(rest())
 
 const loading = ref(false)
@@ -32,6 +33,7 @@ const loading = ref(false)
 const games = ref([])
 const tempGames = ref([])
 const animating = ref(false);
+const showUpButton = ref(false);
 
 const page = ref(1)
 const pageSize = ref(50)
@@ -103,15 +105,28 @@ const currentScrollPosition = ref(0)
 
 const logCurrentScrollPosition = debounce(() => {
   if (scrollableElement.value) {
-    currentScrollPosition.value = scrollableElement.value.scrollTop
-    checkScroll()
+    currentScrollPosition.value = scrollableElement.value.scrollTop;
+    checkScroll();
+
+    // Определение, показывать ли кнопку UpButton
+    const scrollTop = scrollableElement.value.scrollTop;
+    const clientHeight = scrollableElement.value.clientHeight;
+
+    // Показываем кнопку, если прокрутка более чем на один экран вниз
+    showUpButton.value = scrollTop > clientHeight;
   }
-}, 50)
+}, 50);
 
 onActivated(() => {
+  const from = localStorage.getItem('from')
+  const shouldScrollDown = ref(from === 'card')
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
-  scrollDown(scrollableElement, currentScrollPosition)
+  if (shouldScrollDown) {
+    scrollDown(scrollableElement, currentScrollPosition)
+  } else {
+    scrollTop(scrollableElement)
+  }
 })
 
 onDeactivated(() => {
@@ -283,9 +298,11 @@ function sortGames() {
             </div>
         </transition>
 
+      <UpButton />
       <transition name="fade">
         <Loader v-if="loading" position="inline"/>
       </transition>
+      <UpButton :visible="scrollableElement && showUpButton" :platform=platform :scrollable-element=scrollableElement></UpButton>
     </main>
 </template>
 

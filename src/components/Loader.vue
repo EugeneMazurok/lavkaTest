@@ -3,8 +3,8 @@ defineProps({
   platform: String,
   position: {
     type: String,
-    default: 'fixed', // По умолчанию фиксированный
-    validator: value => ['fixed', 'inline'].includes(value) // Возможные значения: 'fixed' и 'inline'
+    default: 'fixed',
+    validator: value => ['fixed', 'inline'].includes(value)
   }
 })
 </script>

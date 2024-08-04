@@ -30,6 +30,7 @@ const loading = ref(true)
 
 const back = () => {
     if (window.history.length > 1) {
+        localStorage.setItem('from', 'card')
         router.go(-1)
     } else {
         router.push({ name: 'INDEX' })
