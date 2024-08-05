@@ -142,6 +142,7 @@ onActivated(() => {
 })
 
 onDeactivated(() => {
+  showUpButton.value = false
   webapp.offEvent('backButtonClicked', back)
   webapp.BackButton.hide()
 })
