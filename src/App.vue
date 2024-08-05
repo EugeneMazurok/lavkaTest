@@ -77,7 +77,7 @@ onMounted(async () => {
     if (page === 'XBOX' ||  page === 'PS') {
         const tab = page === 'XBOX' ? tabs[0] : tabs[1];
         window.localStorage.setItem('activeTab', JSON.stringify(tab))
-        await router.push({ name: 'TOPIC', params: { id: remainingValues }});
+        await router.replace({ name: 'TOPIC', params: { id: remainingValues }});
         return
     }
 

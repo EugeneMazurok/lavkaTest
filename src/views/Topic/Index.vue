@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, reactive, onMounted, onActivated, onDeactivated } from 'vue'
+import {ref, reactive, onMounted, onActivated, onDeactivated, watch} from 'vue'
 import Item from '../../components/Index/Games/Item.vue'
 import { createDirectus, rest, readItems } from '@directus/sdk'
 import config from '../../config/config.json'
@@ -11,7 +11,6 @@ import scrollDown from "../../utils/scrollDown.js";
 import { debounce } from "lodash";
 import Loader from "../../components/Loader.vue";
 import UpButton from "../../components/UpButton.vue";
-import scrollTop from "../../utils/scrollTop.js";
 
 const webapp = window.Telegram.WebApp
 
@@ -48,6 +47,23 @@ const orderBy = route.params.id
 const platform = ref('Xbox')
 
 const sale_prices = ref(null)
+
+const previousRoute = ref(null)
+
+router.beforeEach((from, next) => {
+  previousRoute.value = from
+  next()
+})
+
+const customMethod = () => {
+  scrollDown(scrollableElement, currentScrollPosition)
+}
+
+watch(() => {
+  if (previousRoute.value && previousRoute.value.path.includes('/game')) {
+    customMethod();
+  }
+})
 
 const getStartParams = async () => {
   let response = await client.request(readItems('start_params', {
@@ -118,15 +134,9 @@ const logCurrentScrollPosition = debounce(() => {
 }, 50);
 
 onActivated(() => {
-  const from = localStorage.getItem('from')
-  const shouldScrollDown = ref(from === 'card')
+
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
-  if (shouldScrollDown) {
-    scrollDown(scrollableElement, currentScrollPosition)
-  } else {
-    scrollTop(scrollableElement)
-  }
 })
 
 onDeactivated(() => {

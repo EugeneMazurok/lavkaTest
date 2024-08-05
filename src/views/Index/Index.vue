@@ -67,7 +67,6 @@ const logCurrentScrollPosition = () => {
 }
 
 onActivated(() => {
-  localStorage.removeItem("from")
   let savedTab = window.localStorage.getItem('activeTab')
   if (savedTab) {
     activeTab.value = JSON.parse(savedTab)
