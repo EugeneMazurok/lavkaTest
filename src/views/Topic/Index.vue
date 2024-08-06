@@ -126,11 +126,9 @@ const logCurrentScrollPosition = debounce(() => {
     currentScrollPosition.value = scrollableElement.value.scrollTop;
     checkScroll();
 
-    // Определение, показывать ли кнопку UpButton
     const scrollTop = scrollableElement.value.scrollTop;
     const clientHeight = scrollableElement.value.clientHeight;
 
-    // Показываем кнопку, если прокрутка более чем на один экран вниз
     showUpButton.value = scrollTop > clientHeight;
   }
 }, 50);

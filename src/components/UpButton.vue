@@ -1,8 +1,7 @@
 <script setup>
 import { computed } from 'vue'
-import { Icon } from '@iconify/vue'
+import { defineProps } from 'vue'
 
-// Определение пропсов
 const props = defineProps({
   platform: {
     type: String,
@@ -18,20 +17,17 @@ const props = defineProps({
   }
 })
 
-// Определение цвета кнопки на основе пропса platform
 const buttonColor = computed(() => {
   if (props.platform === 'PS') {
     return 'bg-blue'
   } else if (props.platform === 'Xbox') {
     return 'bg-green'
   } else {
-    return 'bg-gray' // Цвет по умолчанию
+    return 'bg-gray'
   }
 })
 
-// Обработчик клика по кнопке
 const handleButtonClick = () => {
-  console.log("ABOBA")
   const element = props.scrollableElement
   if (element && element.scrollTo) {
     element.scrollTo({
@@ -45,18 +41,31 @@ const handleButtonClick = () => {
 </script>
 
 <template>
-  <button
-      v-if="visible"
-      @click="handleButtonClick"
-      :class="[
-      'fixed bottom-4 left-4 w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-50',
-      buttonColor
-    ]"
-  >
-    <Icon class="text-white text-2xl" icon="mdi:arrow-up"/>
-  </button>
+  <transition name="fade">
+    <button
+        v-if="visible"
+        @click="handleButtonClick"
+        :class="[
+        'fixed bottom-6 left-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-50',
+        buttonColor
+      ]"
+    >
+      <img src='../assets/icons/arrowUp.png' alt="Icon" class="icon"/>
+    </button>
+  </transition>
 </template>
 
 <style scoped>
-/* Дополнительные стили при необходимости */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+.icon {
+  width: 15px;
+  height: auto;
+}
 </style>
