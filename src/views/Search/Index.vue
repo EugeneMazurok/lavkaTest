@@ -120,6 +120,10 @@ const logCurrentScrollPosition = () => {
 }
 
 onActivated(async () => {
+  const activeTab = window.localStorage.getItem('activeTab')
+  if (activeTab) {
+    platform.value = JSON.parse(activeTab).platform
+  }
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
 
@@ -131,6 +135,9 @@ onActivated(async () => {
 onDeactivated(() => {
   webapp.offEvent('backButtonClicked', back)
   webapp.BackButton.hide()
+  searchValue.value = ''
+  games.value = null
+  donations.value = null
 })
 
 onMounted(async () => {

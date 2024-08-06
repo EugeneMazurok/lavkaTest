@@ -34,8 +34,6 @@ const handleButtonClick = () => {
       top: 0,
       behavior: 'smooth'
     })
-  } else {
-    console.warn('Scrollable element не задан или не поддерживает scrollTo')
   }
 }
 </script>

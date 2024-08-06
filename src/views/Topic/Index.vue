@@ -133,10 +133,14 @@ const logCurrentScrollPosition = debounce(() => {
   }
 }, 50);
 
-onActivated(() => {
-
+onActivated(async () => {
+  const activeTab = window.localStorage.getItem('activeTab')
+  if (activeTab) {
+    platform.value = JSON.parse(activeTab).platform
+  }
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
+  games.value = await getGames()
 })
 
 onDeactivated(() => {
