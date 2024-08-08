@@ -1,6 +1,6 @@
 {
     "DIRECTUS": {
-        "API": "http://85.92.111.120:8056"
+        "API": "stage.lavka-games.ru"
     },
     "BOT": "https://bot.lavka-games.ru",
     "TEST_CHAT_ID": null,

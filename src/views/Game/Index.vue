@@ -196,9 +196,9 @@ const share = () => {
                             <img :src="product.cover_link" class="w-full h-full object-cover" />
                         </swiper-slide>
 
-                        <swiper-slide v-if="product.images && product.images.length > 0" v-for="el, index in product.images" :key="index">
-                            <img :src="config.DIRECTUS.API + '/assets/' + el.directus_files_id.id" class="w-full h-full object-cover" />
-                        </swiper-slide>
+                      <swiper-slide v-if="product.images" v-for="(url, index) in product.images.split(',')" :key="index">
+                        <img :src="url.trim()" class="w-full h-full object-cover" />
+                      </swiper-slide>
 
                     </swiper>
                 </div>
