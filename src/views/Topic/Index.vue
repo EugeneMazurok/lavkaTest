@@ -48,22 +48,20 @@ const platform = ref('Xbox')
 
 const sale_prices = ref(null)
 
-const previousRoute = ref(null) // Состояние для хранения предыдущего маршрута
+const previousRoute = ref(null)
 
-// Сохранение предыдущего маршрута перед изменением
 router.beforeEach((to, from, next) => {
-  previousRoute.value = from // Сохраняем предыдущий маршрут
+  previousRoute.value = from
   next()
 })
 
-const customMethod = () => {
+const scrollMethod = () => {
   scrollDown(scrollableElement, currentScrollPosition)
 }
 
-// Используем watch для отслеживания изменений маршрута
 watch(route, (to, from) => {
   if (previousRoute.value && previousRoute.value.path.includes('/game')) {
-    customMethod();
+    scrollMethod();
   }
 })
 

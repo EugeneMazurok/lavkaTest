@@ -1,16 +1,17 @@
 <script setup>
-import { ref, onMounted, nextTick, onActivated, onDeactivated } from 'vue'
+import {ref, onMounted, nextTick, onActivated, onDeactivated, watch} from 'vue'
 import Item from '../../components/Index/Games/Item.vue'
 import El from '../../components/Index/Donations/El.vue'
 import { createDirectus, rest, readItems } from '@directus/sdk'
 import config from '../../config/config.json'
-import { useRouter } from 'vue-router'
+import {useRouter, useRoute, onBeforeRouteLeave} from 'vue-router'
 import { Icon } from '@iconify/vue'
 import scrollDown from "../../utils/scrollDown.js";
 
 const webapp = window.Telegram.WebApp
 
 const router = useRouter()
+const route = useRoute()
 
 const back = () => {
   router.go(-1)
@@ -29,6 +30,29 @@ const inputRef = ref(null)
 const searchValue = ref('')
 
 const sale_prices = ref(null)
+
+const previousRoute = ref(null)
+
+router.beforeEach((to, from, next) => {
+  previousRoute.value = from
+  next()
+})
+
+const clearSearch = () => {
+  searchValue.value = ''
+  games.value = null
+  donations.value = null
+}
+
+onBeforeRouteLeave((to, from, next) => {
+  if (!to.path.includes('/game')) {
+    clearSearch();
+    console.log("Переход на маршрут не связанный с играми");
+  } else {
+    console.log("Переход на маршрут, связанный с играми");
+  }
+  next();
+});
 
 const getStartParams = async () => {
   let response = await client.request(readItems('start_params', {
@@ -135,9 +159,6 @@ onActivated(async () => {
 onDeactivated(() => {
   webapp.offEvent('backButtonClicked', back)
   webapp.BackButton.hide()
-  searchValue.value = ''
-  games.value = null
-  donations.value = null
 })
 
 onMounted(async () => {
