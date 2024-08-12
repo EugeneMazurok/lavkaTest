@@ -4,7 +4,7 @@ import {ref, reactive, onMounted, onActivated, onDeactivated, watch} from 'vue'
 import Item from '../../components/Index/Games/Item.vue'
 import { createDirectus, rest, readItems } from '@directus/sdk'
 import config from '../../config/config.json'
-import { useRoute, useRouter } from 'vue-router'
+import {onBeforeRouteLeave, useRoute, useRouter} from 'vue-router'
 import Header from '../../components/Header.vue'
 import { Icon } from '@iconify/vue'
 import scrollDown from "../../utils/scrollDown.js";
@@ -48,21 +48,28 @@ const platform = ref('Xbox')
 
 const sale_prices = ref(null)
 
-const previousRoute = ref(null)
+const previousRoute = ref(null) // Состояние для хранения предыдущего маршрута
 
+// Сохранение предыдущего маршрута перед изменением
 router.beforeEach((to, from, next) => {
-  previousRoute.value = from
+  previousRoute.value = from // Сохраняем предыдущий маршрут
   next()
 })
 
-const scrollMethod = () => {
+const customMethod = () => {
+  console.log(currentScrollPosition.value)
   scrollDown(scrollableElement, currentScrollPosition)
 }
 
+// Используем watch для отслеживания изменений маршрута
 watch(route, (to, from) => {
   if (previousRoute.value && previousRoute.value.path.includes('/game')) {
-    scrollMethod();
+    customMethod();
   }
+})
+
+onBeforeRouteLeave( () => {
+  console.log(currentScrollPosition.value)
 })
 
 const getStartParams = async () => {
@@ -132,14 +139,18 @@ const logCurrentScrollPosition = debounce(() => {
 }, 50);
 
 onActivated(async () => {
-  const activeTab = window.localStorage.getItem('activeTab')
+  const activeTab = window.localStorage.getItem('activeTab');
   if (activeTab) {
-    platform.value = JSON.parse(activeTab).platform
+    platform.value = JSON.parse(activeTab).platform;
   }
-  webapp.onEvent('backButtonClicked', back)
-  webapp.BackButton.show()
-  games.value = await getGames()
-})
+  webapp.onEvent('backButtonClicked', back);
+  webapp.BackButton.show();
+
+  // Загружаем данные только если они еще не загружены
+  if (games.value.length === 0) {
+    games.value = await getGames();
+  }
+});
 
 onDeactivated(() => {
   showUpButton.value = false
@@ -177,34 +188,45 @@ const checkScroll = () => {
 
 const ended = ref(false)
 
+const addGames = (newGames) => {
+  games.value = [...games.value, ...newGames];
+};
+
 const refreshHandler = async () => {
   if (!ended.value) {
     loading.value = true;
-    page.value = page.value + 1;
+    page.value += 1;
     console.log(`Текущая страница: ${page.value}`);
-    setTimeout(async () => {
+
+    try {
       let next_items = await getGames();
-      if (!next_items) return;
-      games.value = [...games.value, ...next_items];
+      if (next_items && next_items.length > 0) {
+        addGames(next_items); // Используем addGames для добавления новых карточек
+      }
+      if (next_items.length < pageSize.value) {
+        ended.value = true; // Устанавливаем флаг завершения, если нет больше страниц
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
       loading.value = false;
-    }, 100);
+    }
   }
 };
 
 function sortProducts() {
-  page.value = 1
-  ended.value = false
-  loading.value = true
-  animating.value = true
+  page.value = 1;
+  ended.value = false;
+  loading.value = true;
+  animating.value = true;
 
   getGames().then(newGames => {
-    tempGames.value = newGames
-    sortGames()
-    games.value = [...tempGames.value]
-    loading.value = false
-
-    animating.value = false
-  })
+    tempGames.value = newGames;
+    sortGames();
+    games.value = [...tempGames.value]; // Заменяем старые данные на новые
+    loading.value = false;
+    animating.value = false;
+  });
 }
 
 function sortGames() {
@@ -311,7 +333,6 @@ function sortGames() {
             </div>
         </transition>
 
-      <UpButton />
       <transition name="fade">
         <Loader v-if="loading" position="inline"/>
       </transition>
