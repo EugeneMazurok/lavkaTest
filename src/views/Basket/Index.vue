@@ -77,7 +77,16 @@ const mainButtonClicked = async () => {
 
     if (buttonLoader.value) return
 
-    if (!otherData.mail) {
+    if (promoData.checkbox && promoData.promocode === '') {
+      console.log(promoData.promocode)
+      notValidPromo.error = true
+      currentStatus.value = 'error'
+      notValidPromo.message = 'Обязательное поле'
+      webapp.HapticFeedback.notificationOccurred('error')
+      return
+    }
+
+    else if (!otherData.mail) {
 
         notValidEmail.error = true
         notValidEmail.message = 'Обязательное поле'
@@ -85,7 +94,6 @@ const mainButtonClicked = async () => {
         return
 
     } else
-
     if (!isValidEmail(otherData.mail)) {
 
         notValidEmail.error = true
@@ -130,9 +138,10 @@ watch(() => basketStore.orders, (newValue) => {
 
 const finalPrice = computed(() => {
   return basketStore.orders.reduce((total, order) => {
-    return total + (order.productOption?.plan?.price || 0)
+    const priceWithDiscount = (order.productOption?.plan?.price || 0) - (order.discount || 0);
+    return total + Math.max(priceWithDiscount, 0);
   }, 0)
-})
+});
 
 const otherData = reactive({
     mail: '',
@@ -160,47 +169,145 @@ const notValidEmail = reactive({
     message: ''
 })
 
+// promocode
+
+const notValidPromo = reactive({
+  error: false,
+  message: ''
+});
+
+const promoData = reactive({
+  promocode: '',
+  checkbox: false
+});
+
+// Объект для хранения свойств статусов
+const statusProperties = {
+  default: {
+    image: '../../../src/assets/icons/arrow_right_white.png',
+    borderColor: 'border-transparent'
+  },
+  error: {
+    image: '../../../src/assets/icons/arrow_right_red.png',
+    borderColor: 'border-red'
+  },
+  success: {
+    image: '../../../src/assets/icons/arrow_right_green.png',
+    borderColor: 'border-green'
+  }
+};
+
+const currentStatus = ref('default')
+
+const checkPromo = async () => {
+  if (!promoData.promocode) {
+    notValidPromo.message = 'Обязательное поле';
+    currentStatus.value = 'error';
+    return;
+  }
+
+  const promocodeData = await fetchPromocodeData(promoData.promocode);
+
+  if (!promocodeData) {
+    currentStatus.value = 'error';
+    notValidPromo.message = "Такого промокода нет";
+    return;
+  }
+
+  currentStatus.value = 'success';
+  notValidPromo.message = '';
+
+  basketStore.orders.forEach(order => {
+    if (order.product.promocode) {
+      console.log(promocodeData)
+      if (order.product.promocode.code === promocodeData.code) {
+        console.log(order.product.promocode.code)
+        const price = order.productOption?.plan?.price || 0;
+        if (promocodeData.promo_procent > 0) {
+          order.discount = (price * promocodeData.promo_procent) / 100;
+        } else {
+          order.discount = promocodeData.promo_amount;
+        }
+      }
+    }
+  });
+};
+
+// Сброс статуса при фокусе
+const resetStatus = () => {
+  currentStatus.value = 'default';
+};
+
+
+
 const createOrderItems = async () => {
-    let ordersData = []
+  let ordersData = [];
 
-    basketStore.orders.forEach(async (el) => {
+  basketStore.orders.forEach(async (el) => {
+    let name = el.product.platform + ' | ' + el.product.title;
 
-        let name = el.product.platform + ' | ' + el.product.title
+    if (el.productOption.subscribe?.title) {
+      name = name + ' ' + el.productOption.subscribe.title;
+    }
 
-        if (el.productOption.subscribe?.title) {
-            name = name + ' ' + el.productOption.subscribe.title
-        }
-        
-        if (el.productOption.plan?.title) {
-            name = name + ' ' + el.productOption.plan.title
-        }
+    if (el.productOption.plan?.title) {
+      name = name + ' ' + el.productOption.plan.title;
+    }
 
-        const data = {
-            Games: {
-                game: el.product.id,
-                about: name,
-                price: el.productOption.plan.price,
-                type: el.productOption.plan.id
-            },
-            Subscriptions: {
-                subscription: el.product.id,
-                about: name,
-                price: el.productOption.plan.price
-            },
-            Donations: {
-                donation: el.product.id,
-                about: name,
-                price: el.productOption.plan.price
-            }
-        }
+    const data = {
+      Games: {
+        game: el.product.id,
+        about: name,
+        price: el.productOption.plan.price - (el.discount || 0),
+        type: el.productOption.plan.id
+      },
+      Subscriptions: {
+        subscription: el.product.id,
+        about: name,
+        price: el.productOption.plan.price - (el.discount || 0)
+      },
+      Donations: {
+        donation: el.product.id,
+        about: name,
+        price: el.productOption.plan.price - (el.discount || 0)
+      }
+    };
 
-        ordersData.push(data[el.productOption.productCollection])
+    ordersData.push(data[el.productOption.productCollection]);
+  });
 
-    })
+  ordersData = basketStore.orders.map(order => ({
+    ...order,
+    discount: order.discount || 0
+  }));
 
-    return ordersData
-}
+  return ordersData;
+};
 
+const fetchPromocodeData = async (promocode) => {
+  try {
+    // Выполнение запроса
+    const response = await client.request(readItems('Promocodes', {
+      filter: {
+        code: { _eq: promocode }
+      },
+      fields: ['promo_amount', 'promo_procent', 'code']
+    }));
+
+    // Проверка, что response.data существует и является массивом
+    if (response) {
+      console.log('Fetched promocode data:', response.data);
+      return response[0]; // Возвращаем первый элемент массива
+    } else {
+      console.log('No promocode found or data is not an array.');
+      return null; // Возвращаем null, если данных нет
+    }
+  } catch (error) {
+    // Обработка ошибки
+    console.error('Error fetching promocode data:', error);
+    return null;
+  }
+};
 const buttonLoader = ref(false)
 
 const createOrder = async () => {
@@ -328,18 +435,57 @@ const manualeMode = async () => {
                         </div>
 
                         <div class="flex flex-col gap-y-2" v-auto-animate v-if="start_params">
-                            <Item
-                                v-for="el, index in basketStore.orders"
-                                :key="index"
-                                :product="el"
-                                :sale_prices="start_params.sale_prices"
-                            />
+                          <Item
+                              v-for="el, index in basketStore.orders"
+                              :key="index"
+                              :product="el"
+                              :sale_prices="start_params.sale_prices"
+                              :discount="el.discount"
+                          />
                         </div>
 
                         <div class="relative">
                             <div class="flex flex-col py-2 gap-y-6">
                                 <hr class="border-hint_color" />
+                              <div class="flex flex-col gap-y-1">
+                                <button @click="() => promoData.checkbox = !promoData.checkbox" class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
+                                  <span class="font-medium">У меня есть промокод</span>
+                                  <span class="w-8 h-8 rounded-lg bg-white shadow-sm  overflow-clip">
+                                            <span v-if="promoData.checkbox" class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
+                                                <Icon icon="mdi:check-bold" class="text-2xl" />
+                                            </span>
+                                        </span>
+                                </button>
 
+                              </div>
+                              <div v-if="promoData.checkbox" class="flex flex-col gap-y-2"
+                              >
+                                <div class="flex items-center rounded-xl bg-hint_bg_color border-[1.5px]"
+                                     :class=" statusProperties[currentStatus].borderColor">
+                                  <input
+                                      :class="['bg-hint_bg_color placeholder:text-hint_color pl-4 pr-12 py-3 outline-none rounded-xl flex-grow', currentStatus === 'error' ? 'text-red' : currentStatus === 'success' ? 'text-green' : 'text-white']"
+                                      v-model="promoData.promocode"
+                                      @keyup.enter="(e) => e.target.blur()"
+                                      type="text"
+                                      placeholder="Введите промокод"
+                                      @blur="handleBlur"
+                                      @focus="() => { handleFocus(); resetStatus(); }"
+                                  />
+                                  <button
+                                      class="pr-3 ml-auto"
+                                      @click="checkPromo">
+                                    <img
+                                        :src="statusProperties[currentStatus].image"
+                                        alt="Применить"
+                                        class="w-5 h-5"
+                                    />
+                                  </button>
+                                </div>
+
+                                <span v-if="currentStatus === 'error'" class="text-sm text-red mt-2">{{ notValidPromo.message }}</span>
+                                <span v-if="currentStatus === 'success'" class="text-sm text-green mt-2">Промокод успешно применен!</span>
+                              </div>
+                              <hr class="border-hint_color" />
                                 <div class="flex flex-col gap-y-1">
                                     <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
                                         <span class="font-medium">У меня нет аккаунта</span>
@@ -352,6 +498,8 @@ const manualeMode = async () => {
 
                                     <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
                                 </div>
+
+
 
                                 <div class="flex flex-col gap-y-2">
                                     <input
@@ -376,7 +524,7 @@ const manualeMode = async () => {
                             </transition>
                         </div>
 
-                        <MainButton 
+                        <MainButton
                             v-if="!webapp.initDataUnsafe?.user && start_params?.sale !== 'OFF'"
                             :title="mainButtonText"
                             @submit="mainButtonClicked"

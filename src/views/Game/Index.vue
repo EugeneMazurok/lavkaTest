@@ -76,6 +76,8 @@ const getProduct = async (id) => {
     let response = await client.request(readItem('Games', id, {
         fields: ['*.*.*']
     }))
+
+  console.log(response)
     
     product.value = response
 

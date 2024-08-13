@@ -14,7 +14,12 @@ const basketStore = useBasketStore()
 
 const props = defineProps({
     product: Object,
-    sale_prices: Array
+    sale_prices: Array,
+    discount: {
+      type: Number,
+      required: false,
+      default: 0
+    }
 })
 
 const setOrder = () => {
@@ -83,10 +88,15 @@ onMounted(async () => {
             </div>
 
             <div class="flex flex-col">
-                <span class="flex text-lg gap-x-1">
-                    <span>{{ product.productOption.plan.price.toLocaleString('ru-RU') }}</span>
-                    <span>₽</span>
+              <div class="flex items-center gap-x-2">
+                    <span class="flex text-lg gap-x-1">
+                        <span>{{ product.productOption.plan.price.toLocaleString('ru-RU') }}</span>
+                        <span>₽</span>
+                    </span>
+                <span v-if="props.discount > 0" class="bg-green text-white px-2 py-1 rounded-lg text-xs font-bold">
+                        -{{ props.discount.toLocaleString('ru-RU') }} ₽
                 </span>
+              </div>
 
                 <span class="line-clamp-1">
                     {{ product.product.title }}
