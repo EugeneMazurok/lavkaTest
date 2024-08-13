@@ -11,6 +11,7 @@ import Item from '../../components/Basket/Item.vue'
 import isiOS from '../../utils/isiOS'
 import isValidEmail from '../../utils/isValidEmail'
 import axios from 'axios'
+import arrowRightWhite from '../../assets/icons/arrow_right_white.png';
 import generateUUID from '../../utils/generateUUID'
 import MainButton from '../../components/Product/MainButton.vue'
 
@@ -184,7 +185,7 @@ const promoData = reactive({
 // Объект для хранения свойств статусов
 const statusProperties = {
   default: {
-    image: 'src/assets/icons/arrow_right_white.png',
+    image: arrowRightWhite,
     borderColor: 'border-transparent'
   },
   error: {
