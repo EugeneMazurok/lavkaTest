@@ -12,6 +12,8 @@ import isiOS from '../../utils/isiOS'
 import isValidEmail from '../../utils/isValidEmail'
 import axios from 'axios'
 import arrowRightWhite from '../../assets/icons/arrow_right_white.png';
+import arrowRightRed from '../../assets/icons/arrow_right_red.png';
+import arrowRightGreen from '../../assets/icons/arrow_right_green.png';
 import generateUUID from '../../utils/generateUUID'
 import MainButton from '../../components/Product/MainButton.vue'
 
@@ -189,11 +191,11 @@ const statusProperties = {
     borderColor: 'border-transparent'
   },
   error: {
-    image: 'src/assets/icons/arrow_right_red.png',
+    image: arrowRightRed,
     borderColor: 'border-red'
   },
   success: {
-    image: 'src/assets/icons/arrow_right_green.png',
+    image: arrowRightGreen,
     borderColor: 'border-green'
   }
 };
