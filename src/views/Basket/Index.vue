@@ -184,15 +184,15 @@ const promoData = reactive({
 // Объект для хранения свойств статусов
 const statusProperties = {
   default: {
-    image: '../../../src/assets/icons/arrow_right_white.png',
+    image: 'src/assets/icons/arrow_right_white.png',
     borderColor: 'border-transparent'
   },
   error: {
-    image: '../../../src/assets/icons/arrow_right_red.png',
+    image: 'src/assets/icons/arrow_right_red.png',
     borderColor: 'border-red'
   },
   success: {
-    image: '../../../src/assets/icons/arrow_right_green.png',
+    image: 'src/assets/icons/arrow_right_green.png',
     borderColor: 'border-green'
   }
 };
