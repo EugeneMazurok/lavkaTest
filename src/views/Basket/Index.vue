@@ -1,12 +1,12 @@
 <script setup>
 
 import config from '../../config/config.json'
-import { useRoute, useRouter } from 'vue-router'
-import { ref, reactive, onMounted, onUnmounted, watch, computed, onActivated, onDeactivated } from 'vue'
-import { createDirectus, rest, readItems, createItem, createItems } from '@directus/sdk'
+import {useRoute, useRouter} from 'vue-router'
+import {ref, reactive, onMounted, onUnmounted, watch, computed, onActivated, onDeactivated} from 'vue'
+import {createDirectus, rest, readItems, createItem, createItems} from '@directus/sdk'
 import Header from '../../components/Header.vue'
-import { Icon } from '@iconify/vue'
-import { useBasketStore } from '../../store/basket'
+import {Icon} from '@iconify/vue'
+import {useBasketStore} from '../../store/basket'
 import Item from '../../components/Basket/Item.vue'
 import isiOS from '../../utils/isiOS'
 import isValidEmail from '../../utils/isValidEmail'
@@ -33,40 +33,44 @@ const back = () => {
 const start_params = ref(null)
 
 const getStartParams = async () => {
-    let response = await client.request(readItems('start_params', {
-        fields: ['*']
-    }))
+  let response = await client.request(readItems('start_params', {
+    fields: ['*']
+  }))
 
-    start_params.value = response
+  start_params.value = response
 }
 
 onActivated(() => {
-    webapp.onEvent('backButtonClicked', back)
-    webapp.BackButton.show()
+  webapp.onEvent('backButtonClicked', back)
+  webapp.BackButton.show()
 
-    setMainButton()
+  setMainButton()
 
-    webapp.onEvent('mainButtonClicked', mainButtonClicked)
+  webapp.onEvent('mainButtonClicked', mainButtonClicked)
 
-    window.addEventListener('resize', updateHeight)
+  window.addEventListener('resize', updateHeight)
 })
 
 onMounted(async () => {
-    await getStartParams()
+  await getStartParams()
 
-    loading.value = false
+  loading.value = false
 })
 
 onDeactivated(() => {
-    handleBlur()
-    webapp.offEvent('backButtonClicked', back)
-    webapp.BackButton.hide()
+  handleBlur()
+  webapp.offEvent('backButtonClicked', back)
+  webapp.BackButton.hide()
 
-    webapp.offEvent('mainButtonClicked', mainButtonClicked)
-    webapp.MainButton.hide()
-    webapp.MainButton.enable()
-
-    window.removeEventListener('resize', updateHeight)
+  webapp.offEvent('mainButtonClicked', mainButtonClicked)
+  webapp.MainButton.hide()
+  webapp.MainButton.enable()
+  resetDiscount()
+  currentStatus.value = "default"
+  promoData.promocode = '';
+  notValidPromo.error = false
+  notValidPromo.message = ''
+  window.removeEventListener('resize', updateHeight)
 })
 
 const screenHeight = ref(window.innerHeight)
@@ -78,66 +82,61 @@ const updateHeight = () => {
 const mainButtonText = ref('Оформить заказ')
 const mainButtonClicked = async () => {
 
-    if (buttonLoader.value) return
+  if (buttonLoader.value) return
 
-    if (promoData.checkbox && promoData.promocode === '') {
-      console.log(promoData.promocode)
-      notValidPromo.error = true
-      currentStatus.value = 'error'
-      notValidPromo.message = 'Обязательное поле'
-      webapp.HapticFeedback.notificationOccurred('error')
-      return
-    }
+  if (promoData.checkbox && promoData.promocode === '') {
+    console.log(promoData.promocode)
+    notValidPromo.error = true
+    currentStatus.value = 'error'
+    notValidPromo.message = 'Обязательное поле'
+    webapp.HapticFeedback.notificationOccurred('error')
+    return
+  } else if (!otherData.mail) {
 
-    else if (!otherData.mail) {
+    notValidEmail.error = true
+    notValidEmail.message = 'Обязательное поле'
+    webapp.HapticFeedback.notificationOccurred('error')
+    return
 
-        notValidEmail.error = true
-        notValidEmail.message = 'Обязательное поле'
-        webapp.HapticFeedback.notificationOccurred('error')
-        return
+  } else if (!isValidEmail(otherData.mail)) {
 
-    } else
-    if (!isValidEmail(otherData.mail)) {
+    notValidEmail.error = true
+    notValidEmail.message = 'Некорректно введён e-mail'
+    webapp.HapticFeedback.notificationOccurred('error')
+    return
 
-        notValidEmail.error = true
-        notValidEmail.message = 'Некорректно введён e-mail'
-        webapp.HapticFeedback.notificationOccurred('error')
-        return
+  }
 
-    }
-
-    if (start_params.value.sale === 'MANUAL') {
-        await manualeMode()
-    } else
-    if (start_params.value.sale === 'TEST_TINKOFF') {
-        await testMode()
-    } else
-    if (start_params.value.sale === 'PROD_TINKOFF') {
-        await prodMode()
-    }
+  if (start_params.value.sale === 'MANUAL') {
+    await manualeMode()
+  } else if (start_params.value.sale === 'TEST_TINKOFF') {
+    await testMode()
+  } else if (start_params.value.sale === 'PROD_TINKOFF') {
+    await prodMode()
+  }
 
 }
 
 const setMainButton = () => {
-    if (basketStore.orders && basketStore.orders.length > 0) {
-        if (start_params.value?.sale === 'OFF') return
-        webapp.MainButton.enable()
-        mainButtonText.value = 'Оформить заказ'
-        webapp.MainButton.color = '#5AAD5D'
-        webapp.MainButton.show()
-    } else {
-        webapp.MainButton.disable()
-        mainButtonText.value = 'Пока нечего оформлять'
-        webapp.MainButton.color = '#5A5A5A'
-        webapp.MainButton.show()
-    }
+  if (basketStore.orders && basketStore.orders.length > 0) {
+    if (start_params.value?.sale === 'OFF') return
+    webapp.MainButton.enable()
+    mainButtonText.value = 'Оформить заказ'
+    webapp.MainButton.color = '#5AAD5D'
+    webapp.MainButton.show()
+  } else {
+    webapp.MainButton.disable()
+    mainButtonText.value = 'Пока нечего оформлять'
+    webapp.MainButton.color = '#5A5A5A'
+    webapp.MainButton.show()
+  }
 
-    webapp.MainButton.text = mainButtonText.value
+  webapp.MainButton.text = mainButtonText.value
 }
 
 watch(() => basketStore.orders, (newValue) => {
-    setMainButton()
-}, { deep: true })
+  setMainButton()
+}, {deep: true})
 
 const finalPrice = computed(() => {
   return basketStore.orders.reduce((total, order) => {
@@ -147,29 +146,29 @@ const finalPrice = computed(() => {
 });
 
 const otherData = reactive({
-    mail: '',
-    checkbox: false
+  mail: '',
+  checkbox: false
 })
 
 const handleFocus = () => {
-    if (isiOS()) {
-        const mainElement = document.querySelector('body')
-        if (mainElement) {
-            mainElement.classList.add('pb-80')
-        }
+  if (isiOS()) {
+    const mainElement = document.querySelector('body')
+    if (mainElement) {
+      mainElement.classList.add('pb-80')
     }
+  }
 }
 
 const handleBlur = () => {
-    const mainElement = document.querySelector('body')
-    if (mainElement) {
-        mainElement.classList.remove('pb-80')
-    }
+  const mainElement = document.querySelector('body')
+  if (mainElement) {
+    mainElement.classList.remove('pb-80')
+  }
 }
 
 const notValidEmail = reactive({
-    error: false,
-    message: ''
+  error: false,
+  message: ''
 })
 
 // promocode
@@ -202,6 +201,12 @@ const statusProperties = {
 
 const currentStatus = ref('default')
 
+const resetDiscount = async () => {
+  basketStore.orders.forEach(order => {
+    order.discount = 0
+  })
+}
+
 const checkPromo = async () => {
   if (!promoData.promocode) {
     notValidPromo.message = 'Обязательное поле';
@@ -209,38 +214,44 @@ const checkPromo = async () => {
     return;
   }
 
-  const promocodeData = await fetchPromocodeData(promoData.promocode);
+  let foundPromo = false; // Флаг для отслеживания найденного промокода
 
-  if (!promocodeData) {
-    currentStatus.value = 'error';
-    notValidPromo.message = "Такого промокода нет";
-    return;
-  }
+  for (const order of basketStore.orders) {
+    for (const productPromocode of order.product.promocode) {
+      console.log(promoData.promocode.toUpperCase() === productPromocode.Promocodes_id.code);
 
-  currentStatus.value = 'success';
-  notValidPromo.message = '';
-
-  basketStore.orders.forEach(order => {
-    if (order.product.promocode) {
-      console.log(promocodeData)
-      if (order.product.promocode.code === promocodeData.code) {
-        console.log(order.product.promocode.code)
+      if (productPromocode.Promocodes_id.code.toUpperCase() === promoData.promocode.toUpperCase()) {
+        currentStatus.value = 'success';
+        notValidPromo.message = ''; // Сравниваем введенный промокод с каждым промокодом товара
         const price = order.productOption?.plan?.price || 0;
-        if (promocodeData.promo_procent > 0) {
-          order.discount = (price * promocodeData.promo_procent) / 100;
+
+        if (productPromocode.Promocodes_id.promo_procent > 0) {
+          order.promocodeDiscount = (price * productPromocode.Promocodes_id.promo_procent) / 100;
         } else {
-          order.discount = promocodeData.promo_amount;
+          order.promocodeDiscount = productPromocode.Promocodes_id.promo_amount;
         }
+
+        foundPromo = true; // Устанавливаем флаг, что промокод найден
+        break; // Выходим из вложенного цикла
       }
     }
-  });
+
+    if (foundPromo) {
+      order.discount = order.promocodeDiscount; // Применяем скидку только если промокод найден
+      break; // Выходим из внешнего цикла, если промокод уже найден
+    } else {
+      resetDiscount()
+      notValidPromo.message = 'Такого промокода нет';
+      currentStatus.value = 'error';
+    }
+  }
 };
+
 
 // Сброс статуса при фокусе
 const resetStatus = () => {
   currentStatus.value = 'default';
 };
-
 
 
 const createOrderItems = async () => {
@@ -283,263 +294,266 @@ const createOrderItems = async () => {
     ...order,
     discount: order.discount || 0
   }));
-
+  console.log(ordersData)
   return ordersData;
 };
 
-const fetchPromocodeData = async (promocode) => {
-  try {
-    // Выполнение запроса
-    const response = await client.request(readItems('Promocodes', {
-      filter: {
-        code: { _eq: promocode }
-      },
-      fields: ['promo_amount', 'promo_procent', 'code']
-    }));
-
-    // Проверка, что response.data существует и является массивом
-    if (response) {
-      console.log('Fetched promocode data:', response.data);
-      return response[0]; // Возвращаем первый элемент массива
-    } else {
-      console.log('No promocode found or data is not an array.');
-      return null; // Возвращаем null, если данных нет
-    }
-  } catch (error) {
-    // Обработка ошибки
-    console.error('Error fetching promocode data:', error);
-    return null;
-  }
-};
 const buttonLoader = ref(false)
 
 const createOrder = async () => {
 
-    buttonLoader.value = true
-    
-    webapp.MainButton.showProgress()
-    webapp.MainButton.disable()
+  buttonLoader.value = true
 
-    const orders = await createOrderItems()
-    const result = await client.request(createItems('order', orders))
+  webapp.MainButton.showProgress()
+  webapp.MainButton.disable()
 
-    if (!webapp.initDataUnsafe.user?.id) {
+  const orders = await createOrderItems()
+  const result = await client.request(createItems('order', orders))
 
-        const ids = result.map((el) => { return { order_id: el.id } })
+  if (!webapp.initDataUnsafe.user?.id) {
 
-        const orderGroup = await client.request(
-            createItem('orders', {
-                user: webapp.initDataUnsafe.user?.id || null,
-                products: ids,
-                email: otherData.mail,
-                help_with_creation: otherData.checkbox,
-                total_price: finalPrice._value
-            })
-        )
+    const ids = result.map((el) => {
+      return {order_id: el.id}
+    })
 
-        if (orderGroup) {
-            router.push({ name: 'ORDER', params: { id: orderGroup.id }})
-        }
+    const orderGroup = await client.request(
+        createItem('orders', {
+          user: webapp.initDataUnsafe.user?.id || null,
+          products: ids,
+          email: otherData.mail,
+          help_with_creation: otherData.checkbox,
+          total_price: finalPrice._value
+        })
+    )
 
-    } else {
-        let composition_admin = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена по подписке)' : ''}`)
-        let composition_user = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена при условии наличия подписки на аккаунте)' : ''}`)
-        let order_admin = `<b>Состав заказа:</b>${composition_admin}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
-        let order_user = `<b>Состав заказа:</b>${composition_user}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
-        let reply
-        let btn = []
-    
-        if (start_params.value.sale === 'MANUAL') {
-            reply = order_user + `\n\nСсылка на оплату формируется и будет отправлена вам в этом чате.
-            
-    // Обратите внимание: заказы исполняются ежедневно с 11:00 до 23:00 по московскому времени. `
-        }
+    const isPromo = promoData.checkbox & promoData.promocode.length !== 0
 
-        const ids = result.map((el) => { return { order_id: el.id } })
-
-        const orderGroup = await client.request(
-            createItem('orders', {
-                user: webapp.initDataUnsafe.user?.id || null,
-                products: ids,
-                email: otherData.mail,
-                help_with_creation: otherData.checkbox,
-                total_price: finalPrice._value
-            })
-        )
-
-        if (orderGroup) {
-
-            let userId = webapp.initDataUnsafe.user?.id
-
-            if (start_params.value?.admin_chat && start_params.value.sale === 'MANUAL') {
-
-                let reply_with_admin = `<b>Новый заказ! 🔥🔥🔥</b>\n\n${order_admin}${otherData.checkbox ? '\n\n⚡️НУЖНО ПОМОЧЬ С АККАУНТОМ⚡️' : ''}\n\nПользователь: <a href='tg://user?id=${webapp.initDataUnsafe.user?.id}'>${webapp.initDataUnsafe.user?.first_name}</a> ${webapp.initDataUnsafe.user?.username ? '@' + webapp.initDataUnsafe.user.username : ''}\nID: ${webapp.initDataUnsafe.user?.id}\nПочта: ${otherData.mail}`
-                let admin_chat = start_params.value.admin_chat
-                try {
-                    await axios.post(config.BOT + '/api/send-message', {
-                        message: reply_with_admin,
-                        chatIds: [admin_chat],
-                        buttons: []
-                    })
-                } catch (ex) {
-                    console.log(ex)
-                }
-            }
-
-            if (userId) {
-                try {
-                    await axios.post(config.BOT + '/api/send-message', {
-                        message: reply,
-                        chatIds: [userId],
-                        buttons: btn
-                    })
-                } catch (ex) {
-                    console.log(ex)
-                }
-            }
-
-            window.localStorage.removeItem('basket-store')
-            basketStore.orders = []
-            webapp.close()
-        }
-
-        webapp.MainButton.hideProgress()
-        webapp.MainButton.enable()
+    if (orderGroup) {
+      router.push({name: 'ORDER', params: {id: orderGroup.id}})
     }
 
-    buttonLoader.value = false
+  } else {
+    let composition_admin = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена по подписке)' : ''} - промокод ${promoData.promocode ? el.discount > 0 : ''} `)
+    let composition_user = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена при условии наличия подписки на аккаунте)' : ''}`)
+    let order_admin = `<b>Состав заказа:</b>${composition_admin}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
+    let order_user = `<b>Состав заказа:</b>${composition_user}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
+    let reply
+    let btn = []
+
+    if (start_params.value.sale === 'MANUAL') {
+      reply = order_user + `\n\nСсылка на оплату формируется и будет отправлена вам в этом чате.
+            
+    // Обратите внимание: заказы исполняются ежедневно с 11:00 до 23:00 по московскому времени. `
+    }
+
+    const ids = result.map((el) => {
+      return {order_id: el.id}
+    })
+
+    const orderGroup = await client.request(
+        createItem('orders', {
+          user: webapp.initDataUnsafe.user?.id || null,
+          products: ids,
+          email: otherData.mail,
+          help_with_creation: otherData.checkbox,
+          total_price: finalPrice._value
+        })
+    )
+
+    if (orderGroup) {
+
+      let userId = webapp.initDataUnsafe.user?.id
+
+      if (start_params.value?.admin_chat && start_params.value.sale === 'MANUAL') {
+
+        let reply_with_admin = `<b>Новый заказ! 🔥🔥🔥</b>\n\n${order_admin}${otherData.checkbox ? '\n\n⚡️НУЖНО ПОМОЧЬ С АККАУНТОМ⚡️' : ''}\n\nПользователь: <a href='tg://user?id=${webapp.initDataUnsafe.user?.id}'>${webapp.initDataUnsafe.user?.first_name}</a> ${webapp.initDataUnsafe.user?.username ? '@' + webapp.initDataUnsafe.user.username : ''}\nID: ${webapp.initDataUnsafe.user?.id}\nПочта: ${otherData.mail}`
+        let admin_chat = start_params.value.admin_chat
+        try {
+          await axios.post(config.BOT + '/api/send-message', {
+            message: reply_with_admin,
+            chatIds: [admin_chat],
+            buttons: []
+          })
+        } catch (ex) {
+          console.log(ex)
+        }
+      }
+
+      if (userId) {
+        try {
+          await axios.post(config.BOT + '/api/send-message', {
+            message: reply,
+            chatIds: [userId],
+            buttons: btn
+          })
+        } catch (ex) {
+          console.log(ex)
+        }
+      }
+
+      window.localStorage.removeItem('basket-store')
+      basketStore.orders = []
+      webapp.close()
+    }
+
+    webapp.MainButton.hideProgress()
+    webapp.MainButton.enable()
+  }
+
+  buttonLoader.value = false
 
 }
 
 const manualeMode = async () => {
-    await createOrder()
+  await createOrder()
 }
-
+const updatePromocode = async () => {
+  if (promoData.checkbox) {
+    resetDiscount()
+    currentStatus.value = "default"
+    promoData.promocode = '';
+    notValidPromo.error = false
+    notValidPromo.message = ''
+    // Обнуляем значение, если чекбокс не отмечен
+  }
+  promoData.checkbox = !promoData.checkbox
+}
 </script>
 
 <template>
-    <main class="h-screen pt-20 overflow-y-auto flex flex-col">
-        <div class="pb-4">
-            <div class="flex flex-col">
-                <Header />
+  <main class="h-screen pt-20 overflow-y-auto flex flex-col">
+    <div class="pb-4">
+      <div class="flex flex-col">
+        <Header/>
 
-                <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
-                    <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
-                        <Icon icon="ion:chevron-back-outline" />
-                        <span>Назад</span>
+        <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
+          <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
+            <Icon icon="ion:chevron-back-outline"/>
+            <span>Назад</span>
+          </button>
+        </div>
+
+        <transition name="fade" appear>
+          <div v-if="basketStore.orders && basketStore.orders.length > 0" class="px-4 flex flex-col gap-y-4">
+            <div class="flex text-xl justify-between items-center font-medium">
+              <h2>Корзина</h2>
+              <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
+            </div>
+
+            <div class="flex flex-col gap-y-2" v-auto-animate v-if="start_params">
+              <Item
+                  v-for="el, index in basketStore.orders"
+                  :key="index"
+                  :product="el"
+                  :sale_prices="start_params.sale_prices"
+                  :discount="currentStatus == 'success' ? el.discount : undefined"
+              />
+            </div>
+
+            <div class="relative">
+              <div class="flex flex-col py-2 gap-y-6">
+                <hr class="border-hint_color"/>
+                <div class="flex flex-col gap-y-1">
+                  <button @click="updatePromocode()"
+                          class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
+                    <span class="font-medium">У меня есть промокод</span>
+                    <span class="w-8 h-8 rounded-lg bg-white shadow-sm  overflow-clip">
+                                            <span v-if="promoData.checkbox"
+                                                  class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
+                                                <Icon icon="mdi:check-bold" class="text-2xl"/>
+                                            </span>
+                                        </span>
+                  </button>
+
+                </div>
+                <div v-if="promoData.checkbox" class="flex flex-col gap-y-2"
+                >
+                  <div class="flex items-center rounded-xl bg-hint_bg_color border-[1.5px]"
+                       :class=" statusProperties[currentStatus].borderColor">
+                    <input
+                        :class="['bg-hint_bg_color placeholder:text-hint_color pl-4 pr-12 py-3 outline-none rounded-xl flex-grow', currentStatus === 'error' ? 'text-red' : currentStatus === 'success' ? 'text-green' : 'text-white']"
+                        v-model="promoData.promocode"
+                        @keyup.enter="(e) => e.target.blur()"
+                        type="text"
+                        placeholder="Введите промокод"
+                        @blur="handleBlur"
+                        @focus="() => { handleFocus(); resetStatus(); }"
+                    />
+                    <button
+                        class="pr-3 ml-auto"
+                        @click="checkPromo">
+                      <img
+                          :src="statusProperties[currentStatus].image"
+                          alt="Применить"
+                          class="w-5 h-5"
+                      />
                     </button>
+                  </div>
+
+                  <span v-if="currentStatus === 'error'" class="text-sm text-red mt-2">{{
+                      notValidPromo.message
+                    }}</span>
+                  <span v-if="currentStatus === 'success'"
+                        class="text-sm text-green mt-2">Промокод успешно применен!</span>
+                </div>
+                <hr class="border-hint_color"/>
+                <div class="flex flex-col gap-y-1">
+                  <button @click="() => otherData.checkbox = !otherData.checkbox"
+                          class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
+                    <span class="font-medium">У меня нет аккаунта</span>
+                    <span class="w-8 h-8 rounded-lg bg-white shadow-sm  overflow-clip">
+                                            <span v-if="otherData.checkbox"
+                                                  class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
+                                                <Icon icon="mdi:check-bold" class="text-2xl"/>
+                                            </span>
+                                        </span>
+                  </button>
+
+                  <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это
+                    бесплатно.</p>
                 </div>
 
-                <transition name="fade" appear>
-                    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="px-4 flex flex-col gap-y-4">
-                        <div class="flex text-xl justify-between items-center font-medium">
-                            <h2>Корзина</h2>
-                            <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
-                        </div>
 
-                        <div class="flex flex-col gap-y-2" v-auto-animate v-if="start_params">
-                          <Item
-                              v-for="el, index in basketStore.orders"
-                              :key="index"
-                              :product="el"
-                              :sale_prices="start_params.sale_prices"
-                              :discount="el.discount"
-                          />
-                        </div>
+                <div class="flex flex-col gap-y-2">
+                  <input
+                      :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px]', notValidEmail.error ? 'border-red' : 'border-transparent']"
+                      v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
+                      placeholder="Введите e-mail для чека"
+                      @blur="handleBlur"
+                      @focus="() => { handleFocus(); notValidEmail.error = false; }"
+                  />
 
-                        <div class="relative">
-                            <div class="flex flex-col py-2 gap-y-6">
-                                <hr class="border-hint_color" />
-                              <div class="flex flex-col gap-y-1">
-                                <button @click="() => promoData.checkbox = !promoData.checkbox" class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
-                                  <span class="font-medium">У меня есть промокод</span>
-                                  <span class="w-8 h-8 rounded-lg bg-white shadow-sm  overflow-clip">
-                                            <span v-if="promoData.checkbox" class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
-                                                <Icon icon="mdi:check-bold" class="text-2xl" />
-                                            </span>
-                                        </span>
-                                </button>
+                  <span v-if="notValidEmail.error && notValidEmail.message"
+                        class="text-sm text-red">{{ notValidEmail.message }}</span>
+                </div>
 
-                              </div>
-                              <div v-if="promoData.checkbox" class="flex flex-col gap-y-2"
-                              >
-                                <div class="flex items-center rounded-xl bg-hint_bg_color border-[1.5px]"
-                                     :class=" statusProperties[currentStatus].borderColor">
-                                  <input
-                                      :class="['bg-hint_bg_color placeholder:text-hint_color pl-4 pr-12 py-3 outline-none rounded-xl flex-grow', currentStatus === 'error' ? 'text-red' : currentStatus === 'success' ? 'text-green' : 'text-white']"
-                                      v-model="promoData.promocode"
-                                      @keyup.enter="(e) => e.target.blur()"
-                                      type="text"
-                                      placeholder="Введите промокод"
-                                      @blur="handleBlur"
-                                      @focus="() => { handleFocus(); resetStatus(); }"
-                                  />
-                                  <button
-                                      class="pr-3 ml-auto"
-                                      @click="checkPromo">
-                                    <img
-                                        :src="statusProperties[currentStatus].image"
-                                        alt="Применить"
-                                        class="w-5 h-5"
-                                    />
-                                  </button>
-                                </div>
+              </div>
 
-                                <span v-if="currentStatus === 'error'" class="text-sm text-red mt-2">{{ notValidPromo.message }}</span>
-                                <span v-if="currentStatus === 'success'" class="text-sm text-green mt-2">Промокод успешно применен!</span>
-                              </div>
-                              <hr class="border-hint_color" />
-                                <div class="flex flex-col gap-y-1">
-                                    <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
-                                        <span class="font-medium">У меня нет аккаунта</span>
-                                        <span class="w-8 h-8 rounded-lg bg-white shadow-sm  overflow-clip">
-                                            <span v-if="otherData.checkbox" class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
-                                                <Icon icon="mdi:check-bold" class="text-2xl" />
-                                            </span>
-                                        </span>
-                                    </button>
-
-                                    <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
-                                </div>
-
-
-
-                                <div class="flex flex-col gap-y-2">
-                                    <input
-                                        :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px]', notValidEmail.error ? 'border-red' : 'border-transparent']"
-                                        v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email" placeholder="Введите e-mail для чека"
-                                        @blur="handleBlur"
-                                        @focus="() => { handleFocus(); notValidEmail.error = false; }"
-                                    />
-
-                                    <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
-                                </div>
-
-                            </div>
-
-                            <transition name="fade">
-                                <div v-if="start_params?.sale === 'OFF'" class="absolute p-4 flex justify-center items-center top-0 left-0 right-0 bottom-0 rounded-xl border-[1.5px] border-hint_color bg-[#373737] bg-opacity-[90%] backdrop-blur-sm">
-                                    <div class="flex flex-col gap-y-4 justify-center items-center">
-                                        <h3 class="font-medium text-center">Проводятся технические работы</h3>
-                                        <span class="text-hint_color text-sm text-center">Мы скоро вернёмся и обязательно оповестим в чате</span>
-                                    </div>
-                                </div>
-                            </transition>
-                        </div>
-
-                        <MainButton
-                            v-if="!webapp.initDataUnsafe?.user && start_params?.sale !== 'OFF'"
-                            :title="mainButtonText"
-                            @submit="mainButtonClicked"
-                            :buttonLoader="buttonLoader"
-                        />
-                    </div>
-
-                    <div :style="{ height: `${screenHeight-142}px` }" v-else class="flex justify-center items-center">
-                        <span class="text-xl">Корзина пуста</span>
-                    </div>
-                </transition>
+              <transition name="fade">
+                <div v-if="start_params?.sale === 'OFF'"
+                     class="absolute p-4 flex justify-center items-center top-0 left-0 right-0 bottom-0 rounded-xl border-[1.5px] border-hint_color bg-[#373737] bg-opacity-[90%] backdrop-blur-sm">
+                  <div class="flex flex-col gap-y-4 justify-center items-center">
+                    <h3 class="font-medium text-center">Проводятся технические работы</h3>
+                    <span
+                        class="text-hint_color text-sm text-center">Мы скоро вернёмся и обязательно оповестим в чате</span>
+                  </div>
+                </div>
+              </transition>
             </div>
-        </div>
-    </main>
+
+            <MainButton
+                v-if="!webapp.initDataUnsafe?.user && start_params?.sale !== 'OFF'"
+                :title="mainButtonText"
+                @submit="mainButtonClicked"
+                :buttonLoader="buttonLoader"
+            />
+          </div>
+
+          <div :style="{ height: `${screenHeight-142}px` }" v-else class="flex justify-center items-center">
+            <span class="text-xl">Корзина пуста</span>
+          </div>
+        </transition>
+      </div>
+    </div>
+  </main>
 </template>

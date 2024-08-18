@@ -27,6 +27,7 @@ const setOrder = () => {
 }
 
 const getProduct = async (id) => {
+  console.log(props.product)
     let collection = props.product.productOption.productCollection
     if (collection) {
       try {
