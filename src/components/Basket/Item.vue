@@ -24,6 +24,7 @@ const props = defineProps({
 
 const setOrder = () => {
     basketStore.setOrderInBasket(props.product)
+
 }
 
 const getProduct = async (id) => {

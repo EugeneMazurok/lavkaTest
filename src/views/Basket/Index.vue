@@ -67,7 +67,7 @@ onDeactivated(() => {
   webapp.MainButton.enable()
   resetDiscount()
   currentStatus.value = "default"
-  promoData.promocode = '';
+  promoData.checkbox = false
   notValidPromo.error = false
   notValidPromo.message = ''
   window.removeEventListener('resize', updateHeight)
@@ -257,7 +257,7 @@ const resetStatus = () => {
 const createOrderItems = async () => {
   let ordersData = [];
 
-  basketStore.orders.forEach(async (el) => {
+  for (const el of basketStore.orders) {
     let name = el.product.platform + ' | ' + el.product.title;
 
     if (el.productOption.subscribe?.title) {
@@ -272,28 +272,28 @@ const createOrderItems = async () => {
       Games: {
         game: el.product.id,
         about: name,
-        price: el.productOption.plan.price - (el.discount || 0),
+        price: el.productOption.plan.price,
         type: el.productOption.plan.id
       },
       Subscriptions: {
         subscription: el.product.id,
         about: name,
-        price: el.productOption.plan.price - (el.discount || 0)
+        price: el.productOption.plan.price
       },
       Donations: {
         donation: el.product.id,
         about: name,
-        price: el.productOption.plan.price - (el.discount || 0)
+        price: el.productOption.plan.price
       }
     };
 
     ordersData.push(data[el.productOption.productCollection]);
-  });
+  }
 
-  ordersData = basketStore.orders.map(order => ({
-    ...order,
-    discount: order.discount || 0
-  }));
+  // ordersData = basketStore.orders.map(order => ({
+  //   ...order,
+  //   discount: order.discount || 0
+  // }));
   console.log(ordersData)
   return ordersData;
 };
@@ -308,9 +308,10 @@ const createOrder = async () => {
   webapp.MainButton.disable()
 
   const orders = await createOrderItems()
+  console.log(orders)
   const result = await client.request(createItems('order', orders))
-
-  if (!webapp.initDataUnsafe.user?.id) {
+  console.log(result)
+  if (webapp.initDataUnsafe.user?.id) {
 
     const ids = result.map((el) => {
       return {order_id: el.id}
@@ -326,15 +327,16 @@ const createOrder = async () => {
         })
     )
 
-    const isPromo = promoData.checkbox & promoData.promocode.length !== 0
-
     if (orderGroup) {
       router.push({name: 'ORDER', params: {id: orderGroup.id}})
     }
 
   } else {
-    let composition_admin = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена по подписке)' : ''} - промокод ${promoData.promocode ? el.discount > 0 : ''} `)
-    let composition_user = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена при условии наличия подписки на аккаунте)' : ''}`)
+    let composition_admin = result.map((el, index) => `
+${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽
+${(el.type && el.type === 'price_subscription') ? '(цена по подписке)' : ''} ${promoData.promocode ? `- промокод ${promoData.promocode.toUpperCase()}` : ''}
+`);
+    let composition_user = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена при условии наличия подписки на аккаунте)' : ''} ${promoData.promocode ? `- промокод ${promoData.promocode.toUpperCase()}` : ''}`)
     let order_admin = `<b>Состав заказа:</b>${composition_admin}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
     let order_user = `<b>Состав заказа:</b>${composition_user}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
     let reply
@@ -342,7 +344,7 @@ const createOrder = async () => {
 
     if (start_params.value.sale === 'MANUAL') {
       reply = order_user + `\n\nСсылка на оплату формируется и будет отправлена вам в этом чате.
-            
+
     // Обратите внимание: заказы исполняются ежедневно с 11:00 до 23:00 по московскому времени. `
     }
 
@@ -480,13 +482,10 @@ const updatePromocode = async () => {
                         @focus="() => { handleFocus(); resetStatus(); }"
                     />
                     <button
-                        class="pr-3 ml-auto"
-                        @click="checkPromo">
-                      <img
-                          :src="statusProperties[currentStatus].image"
-                          alt="Применить"
-                          class="w-5 h-5"
-                      />
+                        class="ml-auto bg-bg_color text-hint_bg_color rounded-md px-3 py-1 mr-2"
+                        @click="checkPromo"
+                    >
+                      Применить
                     </button>
                   </div>
 
