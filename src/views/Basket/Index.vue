@@ -311,7 +311,7 @@ const createOrder = async () => {
   console.log(orders)
   const result = await client.request(createItems('order', orders))
   console.log(result)
-  if (webapp.initDataUnsafe.user?.id) {
+  if (!webapp.initDataUnsafe.user?.id) {
 
     const ids = result.map((el) => {
       return {order_id: el.id}
