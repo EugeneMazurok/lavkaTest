@@ -471,9 +471,9 @@ const updatePromocode = async () => {
                 <div v-if="promoData.checkbox" class="flex flex-col gap-y-2"
                 >
                   <div class="flex items-center rounded-xl bg-hint_bg_color border-[1.5px]"
-                       :class=" statusProperties[currentStatus].borderColor">
+                       :class="statusProperties[currentStatus].borderColor">
                     <input
-                        :class="['bg-hint_bg_color placeholder:text-hint_color pl-4 pr-12 py-3 outline-none rounded-xl flex-grow', currentStatus === 'error' ? 'text-red' : currentStatus === 'success' ? 'text-green' : 'text-white']"
+                        :class="['bg-hint_bg_color placeholder:text-hint_color pl-4 pr-2 py-3 outline-none rounded-xl flex-grow', currentStatus === 'error' ? 'text-red' : currentStatus === 'success' ? 'text-green' : 'text-white']"
                         v-model="promoData.promocode"
                         @keyup.enter="(e) => e.target.blur()"
                         type="text"
@@ -481,12 +481,14 @@ const updatePromocode = async () => {
                         @blur="handleBlur"
                         @focus="() => { handleFocus(); resetStatus(); }"
                     />
-                    <button
-                        class="bg-bg_color text-hint_bg_color rounded-md px-2 py-1 mr-2"
-                        @click="checkPromo"
-                    >
-                      Применить
-                    </button>
+                    <div class="relative">
+                      <button
+                          class="bg-bg_color text-hint_bg_color rounded-md px-2 py-1 absolute right-2 top-1/2 -translate-y-1/2"
+                          @click="checkPromo"
+                      >
+                        Применить
+                      </button>
+                    </div>
                   </div>
 
                   <span v-if="currentStatus === 'error'" class="text-sm text-red mt-2">{{
