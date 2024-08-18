@@ -482,7 +482,7 @@ const updatePromocode = async () => {
                         @focus="() => { handleFocus(); resetStatus(); }"
                     />
                     <button
-                        class="ml-auto bg-bg_color text-hint_bg_color rounded-md px-3 py-1 mr-2"
+                        class="bg-bg_color text-hint_bg_color rounded-md px-2 py-1 mr-2"
                         @click="checkPromo"
                     >
                       Применить
