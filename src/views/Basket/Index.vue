@@ -41,6 +41,7 @@ const getStartParams = async () => {
 }
 
 onActivated(() => {
+
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
 
@@ -134,10 +135,6 @@ const setMainButton = () => {
   webapp.MainButton.text = mainButtonText.value
 }
 
-watch(() => basketStore.orders, (newValue) => {
-  setMainButton()
-}, {deep: true})
-
 const finalPrice = computed(() => {
   return basketStore.orders.reduce((total, order) => {
     const priceWithDiscount = (order.productOption?.plan?.price || 0) - (order.discount || 0);
@@ -218,7 +215,6 @@ const checkPromo = async () => {
 
   for (const order of basketStore.orders) {
     for (const productPromocode of order.product.promocode) {
-      console.log(promoData.promocode.toUpperCase() === productPromocode.Promocodes_id.code);
 
       if (productPromocode.Promocodes_id.code.toUpperCase() === promoData.promocode.toUpperCase()) {
         currentStatus.value = 'success';
