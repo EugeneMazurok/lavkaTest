@@ -30,6 +30,10 @@ const back = () => {
   router.go(-1)
 }
 
+const platform = ref('Xbox')
+const orders = computed(() => {
+  return basketStore.orders.filter(order => order.product.platform === platform.value);
+});
 const start_params = ref(null)
 
 const getStartParams = async () => {
@@ -41,7 +45,10 @@ const getStartParams = async () => {
 }
 
 onActivated(() => {
-
+  const activeTab = window.localStorage.getItem('activeTab');
+  if (activeTab) {
+    platform.value = JSON.parse(activeTab).platform;
+  }
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
 
@@ -119,7 +126,7 @@ const mainButtonClicked = async () => {
 }
 
 const setMainButton = () => {
-  if (basketStore.orders && basketStore.orders.length > 0) {
+  if (orders && orders.value.length > 0) {
     if (start_params.value?.sale === 'OFF') return
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
@@ -199,7 +206,7 @@ const statusProperties = {
 const currentStatus = ref('default')
 
 const resetDiscount = async () => {
-  basketStore.orders.forEach(order => {
+  orders.value.forEach(order => {
     order.discount = 0
   })
 }
@@ -213,7 +220,7 @@ const checkPromo = async () => {
 
   let foundPromo = false; // Флаг для отслеживания найденного промокода
 
-  for (const order of basketStore.orders) {
+  for (const order of orders) {
     for (const productPromocode of order.product.promocode) {
 
       if (productPromocode.Promocodes_id.code.toUpperCase() === promoData.promocode.toUpperCase()) {
@@ -253,7 +260,7 @@ const resetStatus = () => {
 const createOrderItems = async () => {
   let ordersData = [];
 
-  for (const el of basketStore.orders) {
+  for (const el of orders) {
     let name = el.product.platform + ' | ' + el.product.title;
 
     if (el.productOption.subscribe?.title) {
@@ -432,7 +439,7 @@ const updatePromocode = async () => {
         </div>
 
         <transition name="fade" appear>
-          <div v-if="basketStore.orders && basketStore.orders.length > 0" class="px-4 flex flex-col gap-y-4">
+          <div v-if="orders && orders.length > 0" class="px-4 flex flex-col gap-y-4">
             <div class="flex text-xl justify-between items-center font-medium">
               <h2>Корзина</h2>
               <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
@@ -440,7 +447,7 @@ const updatePromocode = async () => {
 
             <div class="flex flex-col gap-y-2" v-auto-animate v-if="start_params">
               <Item
-                  v-for="el, index in basketStore.orders"
+                  v-for="el, index in orders"
                   :key="index"
                   :product="el"
                   :sale_prices="start_params.sale_prices"
