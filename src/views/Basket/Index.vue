@@ -260,7 +260,7 @@ const resetStatus = () => {
 const createOrderItems = async () => {
   let ordersData = [];
 
-  for (const el of orders) {
+  for (const el of orders.value) {
     let name = el.product.platform + ' | ' + el.product.title;
 
     if (el.productOption.subscribe?.title) {
@@ -486,7 +486,7 @@ const updatePromocode = async () => {
                     />
                     <div class="relative">
                       <button
-                          class="bg-bg_color text-hint_bg_color rounded-md px-2 py-1 absolute right-2 top-1/2 -translate-y-1/2"
+                          class="bg-bg_color text-white rounded-md px-2 py-1 absolute right-2 top-1/2 -translate-y-1/2"
                           @click="checkPromo"
                       >
                         Применить
