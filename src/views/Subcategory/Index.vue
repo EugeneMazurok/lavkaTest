@@ -37,7 +37,7 @@ const subcategory = ref(null)
 
 const getSubcategory = async () => {
     let response = await client.request(readItem('Subcategories', cat_id, {
-        fields: ['*']
+        fields: ['*.*.*']
     }))
 
     subcategory.value = response

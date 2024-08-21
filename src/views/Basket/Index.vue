@@ -38,7 +38,7 @@ const start_params = ref(null)
 
 const getStartParams = async () => {
   let response = await client.request(readItems('start_params', {
-    fields: ['*']
+    fields: ['*.*.*']
   }))
 
   start_params.value = response
@@ -220,7 +220,7 @@ const checkPromo = async () => {
 
   let foundPromo = false; // Флаг для отслеживания найденного промокода
 
-  for (const order of orders) {
+  for (const order of orders.value) {
     for (const productPromocode of order.product.promocode) {
 
       if (productPromocode.Promocodes_id.code.toUpperCase() === promoData.promocode.toUpperCase()) {

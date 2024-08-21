@@ -21,7 +21,7 @@
         pageLoading.value = true
         try {
             order.value = await client.request(readItem('orders', route.params.id, {
-                fields: ['*']
+                fields: ['*.*.*']
             }))
 
             if (order.value.status === 'paid') {
