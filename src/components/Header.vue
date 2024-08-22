@@ -1,78 +1,28 @@
 <script setup>
-import { ref, onMounted, computed, onActivated, watch } from 'vue';
-import { Icon } from '@iconify/vue';
-import { useBasketStore } from '../store/basket';
-import { useRouter } from 'vue-router';
 
-const emit = defineEmits('activeSearch');
-const basketStore = useBasketStore();
-const router = useRouter();
+import { ref, onMounted } from 'vue'
+import { Icon } from '@iconify/vue'
+import { useBasketStore } from '../store/basket'
+import { useRouter } from 'vue-router'
 
-const platform = ref('Xbox');
-const theme = ref('Xbox');
+const emit = defineEmits('activeSearch')
 
-// Вычисляемое свойство для orders
-const orders = computed(() => {
-  return basketStore.orders.filter(order => order.product.platform === platform.value);
-});
+const router = useRouter()
 
-// Слушаем изменения в localStorage для activeTab
-watch(
-    () => localStorage.getItem('activeTab'),
-    (newActiveTab) => {
-        const parsedActiveTab = JSON.parse(newActiveTab);
-        platform.value = parsedActiveTab.platform;
-        // Здесь мы можем вызвать computed свойство orders, чтобы оно обновилось
-    },
-    { immediate: true } // Сразу вызываем при монтировании
-);
-
-// Функция для инициализации платформы из localStorage
-const initializePlatform = () => {
-  const activeTab = window.localStorage.getItem('activeTab');
-  if (activeTab) {
-    platform.value = JSON.parse(activeTab).platform;
-    theme.value = platform.value; // Обновляем тему
-  }
-};
-
-let lastActiveTab = localStorage.getItem('activeTab');
-
-setInterval(() => {
-  const currentActiveTab = localStorage.getItem('activeTab');
-  if (currentActiveTab !== lastActiveTab) {
-    lastActiveTab = currentActiveTab;
-    const parsedActiveTab = currentActiveTab ? JSON.parse(currentActiveTab) : null;
-    if (parsedActiveTab) {
-      platform.value = parsedActiveTab.platform;
-    }
-  }
-}, 100); // Проверка каждую секунду
-
-
-const handleStorageChange = (event) => {
-  if (event.key === 'activeTab') {
-    console.log(event.key)
-    const newActiveTab = event.newValue;
-    if (newActiveTab) {
-      platform.value = JSON.parse(newActiveTab).platform;
-      console.log("поменялась activeTab")    }
-  }
-};
+const basketStore = useBasketStore()
+const theme = ref('Xbox')
 
 onMounted(() => {
-  initializePlatform();
-  window.addEventListener('storage', handleStorageChange);
-});
-
-onActivated(()=> {
-  initializePlatform();
-  window.addEventListener('storage', handleStorageChange);
+  const activeTab = window.localStorage.getItem('activeTab')
+  if (activeTab) {
+    theme.value = JSON.parse(activeTab).platform
+  }
 })
 
 defineProps({
-  page: String,
-});
+  page: String
+})
+
 </script>
 
 <template>
@@ -86,7 +36,7 @@ defineProps({
       <router-link :to="{ name: 'BASKET' }" class="flex active:opacity-75 transition-all justify-center items-center h-12 w-12 shrink-0 bg-hint_bg_color rounded-xl relative">
         <Icon icon="ion:cart-outline" class="text-xl" />
         <transition name="bounce" appear>
-          <span v-if="orders && orders.length > 0" class="absolute flex justify-center items-center -top-2 -right-2 w-6 h-6 bg-red rounded-full text-xs font-semibold shadow-sm">{{ orders.length }}</span>
+          <span v-if="basketStore.orders && basketStore.orders.length > 0" class="absolute flex justify-center items-center -top-2 -right-2 w-6 h-6 bg-red rounded-full text-xs font-semibold shadow-sm">{{ basketStore.orders.length }}</span>
         </transition>
       </router-link>
 

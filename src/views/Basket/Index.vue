@@ -218,9 +218,10 @@ const checkPromo = async () => {
     return;
   }
 
-  let foundPromo = false; // Флаг для отслеживания найденного промокода
+  let foundAnyPromo = false; // Флаг для отслеживания, был ли вообще найден промокод
 
   for (const order of orders.value) {
+    order.discount = 0; // Сброс скидки по умолчанию
     for (const productPromocode of order.product.promocode) {
 
       if (productPromocode.Promocodes_id.code.toUpperCase() === promoData.promocode.toUpperCase()) {
@@ -234,21 +235,20 @@ const checkPromo = async () => {
           order.promocodeDiscount = productPromocode.Promocodes_id.promo_amount;
         }
 
-        foundPromo = true; // Устанавливаем флаг, что промокод найден
-        break; // Выходим из вложенного цикла
+        order.discount = order.promocodeDiscount; // Применяем скидку только если промокод найден
+        foundAnyPromo = true; // Устанавливаем флаг, что промокод был найден хотя бы раз
+        break; // Выходим из вложенного цикла по промокодам товара
       }
     }
+  }
 
-    if (foundPromo) {
-      order.discount = order.promocodeDiscount; // Применяем скидку только если промокод найден
-      break; // Выходим из внешнего цикла, если промокод уже найден
-    } else {
-      resetDiscount()
-      notValidPromo.message = 'Такого промокода нет';
-      currentStatus.value = 'error';
-    }
+  if (!foundAnyPromo) {
+    resetDiscount();
+    notValidPromo.message = 'Такого промокода нет';
+    currentStatus.value = 'error';
   }
 };
+
 
 
 // Сброс статуса при фокусе
