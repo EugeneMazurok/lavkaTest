@@ -32,7 +32,7 @@ const back = () => {
 
 const platform = ref('Xbox')
 const orders = computed(() => {
-  return basketStore.orders.filter(order => order.product.platform === platform.value);
+  return basketStore.orders
 });
 const start_params = ref(null)
 
@@ -235,7 +235,7 @@ const checkPromo = async () => {
           order.promocodeDiscount = productPromocode.Promocodes_id.promo_amount;
         }
 
-        order.discount = order.promocodeDiscount; // Применяем скидку только если промокод найден
+        order.discount = order.promocodeDiscount;  // Применяем скидку только если промокод найден
         foundAnyPromo = true; // Устанавливаем флаг, что промокод был найден хотя бы раз
         break; // Выходим из вложенного цикла по промокодам товара
       }

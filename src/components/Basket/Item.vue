@@ -92,7 +92,7 @@ onMounted(async () => {
             <div class="flex flex-col">
               <div class="flex items-center gap-x-2">
                     <span class="flex text-lg gap-x-1">
-                        <span>{{ product.productOption.plan.price.toLocaleString('ru-RU') }}</span>
+                        <span>{{ product.productOption.plan.price - discount}}</span>
                         <span>₽</span>
                     </span>
                 <span v-if="props.discount > 0" class="bg-green text-white px-2 py-1 rounded-lg text-xs font-bold">
