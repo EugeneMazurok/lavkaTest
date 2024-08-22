@@ -276,17 +276,20 @@ const createOrderItems = async () => {
         game: el.product.id,
         about: name,
         price: el.productOption.plan.price,
-        type: el.productOption.plan.id
+        type: el.productOption.plan.id,
+        discount: el.discount
       },
       Subscriptions: {
         subscription: el.product.id,
         about: name,
-        price: el.productOption.plan.price
+        price: el.productOption.plan.price,
+        discount: el.discount
       },
       Donations: {
         donation: el.product.id,
         about: name,
-        price: el.productOption.plan.price
+        price: el.productOption.plan.price,
+        discount: el.discount
       }
     };
 
@@ -336,10 +339,10 @@ const createOrder = async () => {
 
   } else {
     let composition_admin = result.map((el, index) => `
-${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽
+${index + 1}. ${el.about} - ${el.price - el.discount} ₽
 ${(el.type && el.type === 'price_subscription') ? '(цена по подписке)' : ''} ${promoData.promocode ? `- промокод ${promoData.promocode.toUpperCase()}` : ''}
 `);
-    let composition_user = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена при условии наличия подписки на аккаунте)' : ''} ${promoData.promocode ? `- промокод ${promoData.promocode.toUpperCase()}` : ''}`)
+    let composition_user = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price - el.discount} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена при условии наличия подписки на аккаунте)' : ''} ${promoData.promocode ? `- промокод ${promoData.promocode.toUpperCase()}` : ''}`)
     let order_admin = `<b>Состав заказа:</b>${composition_admin}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
     let order_user = `<b>Состав заказа:</b>${composition_user}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
     let reply
