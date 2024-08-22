@@ -156,11 +156,11 @@ const otherData = reactive({
 
 const handleFocus = () => {
   if (isiOS()) {
-    const mainElement = document.querySelector('body')
-    if (mainElement) {
-      mainElement.classList.add('pb-80')
-    }
-  }
+  //   const mainElement = document.querySelector('body')
+  //   if (mainElement) {
+  //     mainElement.classList.add('pb-80')
+  //   }
+  // }
 }
 
 const handleBlur = () => {
@@ -221,7 +221,7 @@ const checkPromo = async () => {
   let foundAnyPromo = false; // Флаг для отслеживания, был ли вообще найден промокод
 
   for (const order of orders.value) {
-    order.discount = 0; // Сброс скидки по умолчанию
+    order.discount = 0;
     for (const productPromocode of order.product.promocode) {
 
       if (productPromocode.Promocodes_id.code.toUpperCase() === promoData.promocode.toUpperCase()) {
@@ -425,7 +425,8 @@ const updatePromocode = async () => {
     // Обнуляем значение, если чекбокс не отмечен
   }
   promoData.checkbox = !promoData.checkbox
-}
+}}
+
 </script>
 
 <template>
