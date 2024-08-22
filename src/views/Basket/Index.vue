@@ -156,11 +156,8 @@ const otherData = reactive({
 
 const handleFocus = () => {
   if (isiOS()) {
-  //   const mainElement = document.querySelector('body')
-  //   if (mainElement) {
-  //     mainElement.classList.add('pb-80')
-  //   }
-  // }
+    console.log("Is ios")
+  }
 }
 
 const handleBlur = () => {
@@ -425,8 +422,7 @@ const updatePromocode = async () => {
     // Обнуляем значение, если чекбокс не отмечен
   }
   promoData.checkbox = !promoData.checkbox
-}}
-
+}
 </script>
 
 <template>
