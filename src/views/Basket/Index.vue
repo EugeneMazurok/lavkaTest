@@ -8,7 +8,6 @@ import Header from '../../components/Header.vue'
 import {Icon} from '@iconify/vue'
 import {useBasketStore} from '../../store/basket'
 import Item from '../../components/Basket/Item.vue'
-import isiOS from '../../utils/isiOS'
 import isValidEmail from '../../utils/isValidEmail'
 import axios from 'axios'
 import arrowRightWhite from '../../assets/icons/arrow_right_white.png';
@@ -76,6 +75,7 @@ onDeactivated(() => {
   resetDiscount()
   currentStatus.value = "default"
   promoData.checkbox = false
+  promoData.promocode = ''
   notValidPromo.error = false
   notValidPromo.message = ''
   window.removeEventListener('resize', updateHeight)
@@ -153,12 +153,6 @@ const otherData = reactive({
   mail: '',
   checkbox: false
 })
-
-const handleFocus = () => {
-  if (isiOS()) {
-    console.log("Is ios")
-  }
-}
 
 const handleBlur = () => {
   const mainElement = document.querySelector('body')
@@ -293,11 +287,6 @@ const createOrderItems = async () => {
     ordersData.push(data[el.productOption.productCollection]);
   }
 
-  // ordersData = basketStore.orders.map(order => ({
-  //   ...order,
-  //   discount: order.discount || 0
-  // }));
-  console.log(ordersData)
   return ordersData;
 };
 
@@ -451,7 +440,7 @@ const updatePromocode = async () => {
                   :key="index"
                   :product="el"
                   :sale_prices="start_params.sale_prices"
-                  :discount="currentStatus == 'success' ? el.discount : undefined"
+                  :discount="currentStatus != 'error' ? el.discount : undefined"
               />
             </div>
 
@@ -482,7 +471,7 @@ const updatePromocode = async () => {
                         type="text"
                         placeholder="Введите промокод"
                         @blur="handleBlur"
-                        @focus="() => { handleFocus(); resetStatus(); }"
+                        @focus="() => { resetStatus(); }"
                     />
                     <div class="relative">
                       <button
@@ -524,7 +513,7 @@ const updatePromocode = async () => {
                       v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
                       placeholder="Введите e-mail для чека"
                       @blur="handleBlur"
-                      @focus="() => { handleFocus(); notValidEmail.error = false; }"
+                      @focus="() => { notValidEmail.error = false; }"
                   />
 
                   <span v-if="notValidEmail.error && notValidEmail.message"
