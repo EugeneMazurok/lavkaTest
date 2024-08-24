@@ -59,7 +59,6 @@ onActivated(() => {
 
   setMainButton()
 
-  window.addEventListener('resize', updateHeight);
   webapp.onEvent('mainButtonClicked', mainButtonClicked)
 })
 
@@ -73,7 +72,6 @@ onDeactivated(() => {
   handleBlur()
   webapp.offEvent('backButtonClicked', back)
   webapp.BackButton.hide()
-  window.removeEventListener('resize', updateHeight);
   webapp.offEvent('mainButtonClicked', mainButtonClicked)
   webapp.MainButton.hide()
   webapp.MainButton.enable()
@@ -469,7 +467,6 @@ const updatePromocode = async () => {
                         @keyup.enter="(e) => e.target.blur()"
                         type="text"
                         placeholder="Введите промокод"
-                        @blur="handleBlur"
                         @focus="() => { resetStatus(); }"
                     />
                     <div class="relative">
@@ -511,7 +508,6 @@ const updatePromocode = async () => {
                       :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px]', notValidEmail.error ? 'border-red' : 'border-transparent']"
                       v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
                       placeholder="Введите e-mail для чека"
-                      @blur="handleBlur"
                       @focus="() => { notValidEmail.error = false; }"
                   />
 
