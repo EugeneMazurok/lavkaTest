@@ -469,14 +469,12 @@ const updatePromocode = async () => {
                         placeholder="Введите промокод"
                         @focus="() => { resetStatus(); }"
                     />
-                    <div class="relative">
                       <button
-                          class="bg-bg_color text-white rounded-md px-2 py-1 absolute right-2 top-1/2 -translate-y-1/2"
+                          class="bg-bg_color text-white rounded-md px-2 py-1 mr-2"
                           @click="checkPromo"
                       >
                         Применить
                       </button>
-                    </div>
                   </div>
 
                   <span v-if="currentStatus === 'error'" class="text-sm text-red mt-2">{{
