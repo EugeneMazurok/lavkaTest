@@ -42,6 +42,12 @@ const getStartParams = async () => {
 
   start_params.value = response
 }
+const screenHeight = ref(document.documentElement.clientHeight);
+
+const updateHeight = () => {
+  screenHeight.value = document.documentElement.clientHeight;
+};
+
 
 onActivated(() => {
   const activeTab = window.localStorage.getItem('activeTab');
@@ -53,9 +59,8 @@ onActivated(() => {
 
   setMainButton()
 
+  window.addEventListener('resize', updateHeight);
   webapp.onEvent('mainButtonClicked', mainButtonClicked)
-
-  window.addEventListener('resize', updateHeight)
 })
 
 onMounted(async () => {
@@ -68,7 +73,7 @@ onDeactivated(() => {
   handleBlur()
   webapp.offEvent('backButtonClicked', back)
   webapp.BackButton.hide()
-
+  window.removeEventListener('resize', updateHeight);
   webapp.offEvent('mainButtonClicked', mainButtonClicked)
   webapp.MainButton.hide()
   webapp.MainButton.enable()
@@ -78,14 +83,7 @@ onDeactivated(() => {
   promoData.promocode = ''
   notValidPromo.error = false
   notValidPromo.message = ''
-  window.removeEventListener('resize', updateHeight)
 })
-
-const screenHeight = ref(window.innerHeight)
-
-const updateHeight = () => {
-  screenHeight.value = window.innerHeight
-}
 
 const mainButtonText = ref('Оформить заказ')
 const mainButtonClicked = async () => {
@@ -213,6 +211,7 @@ const checkPromo = async () => {
 
   for (const order of orders.value) {
     order.discount = 0;
+    console.log(order)
     for (const productPromocode of order.product.promocode) {
 
       if (productPromocode.Promocodes_id.code.toUpperCase() === promoData.promocode.toUpperCase()) {
