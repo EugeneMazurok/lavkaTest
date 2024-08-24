@@ -462,7 +462,7 @@ const updatePromocode = async () => {
                   <div class="flex items-center rounded-xl bg-hint_bg_color border-[1.5px]"
                        :class="statusProperties[currentStatus].borderColor">
                     <input
-                        :class="['bg-hint_bg_color placeholder:text-hint_color pl-4 pr-2 py-3 outline-none rounded-xl flex-grow', currentStatus === 'error' ? 'text-red' : currentStatus === 'success' ? 'text-green' : 'text-white']"
+                        :class="['bg-hint_bg_color placeholder:text-hint_color pl-4 pr-2 py-3 outline-none rounded-xl flex-grow float-left', currentStatus === 'error' ? 'text-red' : currentStatus === 'success' ? 'text-green' : 'text-white']"
                         v-model="promoData.promocode"
                         @keyup.enter="(e) => e.target.blur()"
                         type="text"
@@ -503,7 +503,7 @@ const updatePromocode = async () => {
 
                 <div class="flex flex-col gap-y-2">
                   <input
-                      :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px]', notValidEmail.error ? 'border-red' : 'border-transparent']"
+                      :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
                       v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
                       placeholder="Введите e-mail для чека"
                       @focus="() => { notValidEmail.error = false; }"
