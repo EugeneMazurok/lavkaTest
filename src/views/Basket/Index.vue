@@ -50,6 +50,7 @@ const updateHeight = () => {
 
 
 onActivated(() => {
+  window.addEventListener('resize', updateHeight);
   const activeTab = window.localStorage.getItem('activeTab');
   if (activeTab) {
     platform.value = JSON.parse(activeTab).platform;
@@ -70,6 +71,7 @@ onMounted(async () => {
 
 onDeactivated(() => {
   handleBlur()
+  window.removeEventListener('resize', updateHeight)
   webapp.offEvent('backButtonClicked', back)
   webapp.BackButton.hide()
   webapp.offEvent('mainButtonClicked', mainButtonClicked)
@@ -464,10 +466,10 @@ const updatePromocode = async () => {
                     <input
                         :class="['bg-hint_bg_color placeholder:text-hint_color pl-4 pr-2 py-3 outline-none rounded-xl flex-grow float-left', currentStatus === 'error' ? 'text-red' : currentStatus === 'success' ? 'text-green' : 'text-white']"
                         v-model="promoData.promocode"
-                        @keyup.enter="(e) => e.target.blur()"
                         type="text"
                         placeholder="Введите промокод"
-                        @focus="() => { resetStatus(); }"
+                        @focus="(e) => { resetStatus(); setTimeout(() => { e.target.scrollIntoView({behavior: 'smooth', block: 'center'}); updateHeight(); }, 300); }"
+                        @keyup.enter="(e) => { e.target.blur(); handleBlur(); }"
                     />
                       <button
                           class="bg-bg_color text-white rounded-md px-2 py-1 mr-2"
