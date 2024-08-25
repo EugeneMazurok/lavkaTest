@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
+import './registerServiceWorker'
 
 const app = createApp(App)
 app.use(router)
