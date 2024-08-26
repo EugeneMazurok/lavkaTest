@@ -24,7 +24,7 @@ const route = useRoute()
 const webapp = window.Telegram.WebApp
 
 const loading = ref(true)
-console.log("test2")
+console.log("tes")
 const back = () => {
   router.go(-1)
 }
@@ -152,12 +152,14 @@ const otherData = reactive({
   checkbox: false
 })
 
+const handleFocus = (e) => {
+  e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.body.style.height = `${window.innerHeight + 200}px`; // Увеличение высоты на 200px
+};
+
 const handleBlur = () => {
-  const mainElement = document.querySelector('body')
-  if (mainElement) {
-    mainElement.classList.remove('pb-80')
-  }
-}
+  document.body.style.height = 'auto'; // Возврат к обычной высоте
+};
 
 const notValidEmail = reactive({
   error: false,
@@ -468,7 +470,8 @@ const updatePromocode = async () => {
                         v-model="promoData.promocode"
                         type="text"
                         placeholder="Введите промокод"
-                        @focus="(e) => { resetStatus(); setTimeout(() => { e.target.scrollIntoView({behavior: 'smooth', block: 'center'}); updateHeight(); }, 300); }"
+                        @focus="(e) => { resetStatus(); handleFocus(e); }"
+                        @blur="handleBlur"
                         @keyup.enter="(e) => { e.target.blur(); handleBlur(); }"
                     />
                       <button
@@ -508,7 +511,8 @@ const updatePromocode = async () => {
                       :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
                       v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
                       placeholder="Введите e-mail для чека"
-                      @focus="() => { notValidEmail.error = false; }"
+                      @focus="(e) => { notValidEmail.error = false; handleFocus(e); }"
+                      @blur="handleBlur"
                   />
 
                   <span v-if="notValidEmail.error && notValidEmail.message"
