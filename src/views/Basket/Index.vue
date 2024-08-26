@@ -152,13 +152,18 @@ const otherData = reactive({
   checkbox: false
 })
 
-const handleFocus = (e) => {
-  e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  document.body.style.height = `${window.innerHeight + 200}px`; // Увеличение высоты на 200px
+const handleFocus = () => {
+  const mainElement = document.querySelector('body');
+  if (mainElement) {
+    mainElement.classList.add('pb-80'); // Добавьте нужный отступ
+  }
 };
 
 const handleBlur = () => {
-  document.body.style.height = 'auto'; // Возврат к обычной высоте
+  const mainElement = document.querySelector('body');
+  if (mainElement) {
+    mainElement.classList.remove('pb-80');
+  }
 };
 
 const notValidEmail = reactive({
@@ -416,7 +421,7 @@ const updatePromocode = async () => {
 </script>
 
 <template>
-  <main class="h-screen pt-20 overflow-y-auto flex flex-col">
+  <main class="min-h-[100vh] pt-20 overflow-y-auto flex flex-col">
     <div class="pb-4">
       <div class="flex flex-col">
         <Header/>
@@ -549,10 +554,3 @@ const updatePromocode = async () => {
     </div>
   </main>
 </template>
-
-<style scoped>
-input:focus {
-  position: relative;
-  z-index: 1000; /* Обеспечить, чтобы инпут оставался над другими элементами */
-}
-</style>
