@@ -24,7 +24,7 @@ const route = useRoute()
 const webapp = window.Telegram.WebApp
 
 const loading = ref(true)
-
+console.log("test2")
 const back = () => {
   router.go(-1)
 }
