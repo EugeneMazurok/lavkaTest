@@ -549,3 +549,10 @@ const updatePromocode = async () => {
     </div>
   </main>
 </template>
+
+<style scoped>
+input:focus {
+  position: relative;
+  z-index: 1000; /* Обеспечить, чтобы инпут оставался над другими элементами */
+}
+</style>
