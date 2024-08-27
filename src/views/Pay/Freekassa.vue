@@ -4,6 +4,10 @@ import { useRouter } from 'vue-router'
 import isValidEmail from '../../utils/isValidEmail.js'
 import axios from 'axios'
 import config from '../../config/config.json'
+import sbpImage from '../../assets/icons/sbp.png'
+import sbpSelectedImage from '../../assets/icons/sbp_selected.png'
+import cardImage from '../../assets/icons/card.png'
+import cardSelectedImage from '../../assets/icons/card_selected.png'
 
 const router = useRouter()
 
@@ -87,13 +91,13 @@ const selectPaymentMethod = (method) => {
 
         <div class="flex justify-between px-3">
           <img
-              :src="paymentMethod === 'sbp' ? '../../assets/icons/sbp_selected.png' : '../../assets/icons/sbp.png'"
+              :src="paymentMethod === 'sbp' ? sbpSelectedImage : sbpImage"
               @click="selectPaymentMethod('sbp')"
               class="cursor-pointer w-[calc(50%-10px)]"
               alt="Оплата через СБП"
           />
           <img
-              :src="paymentMethod === 'card' ? '../../assets/icons/card_selected.png' : '../../assets/icons/card.png'"
+              :src="paymentMethod === 'card' ? cardSelectedImage : cardImage"
               @click="selectPaymentMethod('card')"
               class="cursor-pointer w-[calc(50%-10px)]"
               alt="Оплата картой"
