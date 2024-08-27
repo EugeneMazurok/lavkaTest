@@ -87,13 +87,13 @@ const selectPaymentMethod = (method) => {
 
         <div class="flex justify-between px-3">
           <img
-              :src="paymentMethod === 'sbp' ? '../../../src/assets/icons/sbp_selected.png' : '../../../src/assets/icons/sbp.png'"
+              :src="paymentMethod === 'sbp' ? '../../assets/icons/sbp_selected.png' : '../../assets/icons/sbp.png'"
               @click="selectPaymentMethod('sbp')"
               class="cursor-pointer w-[calc(50%-10px)]"
               alt="Оплата через СБП"
           />
           <img
-              :src="paymentMethod === 'card' ? '../../../src/assets/icons/card_selected.png' : '../../../src/assets/icons/card.png'"
+              :src="paymentMethod === 'card' ? '../../assets/icons/card_selected.png' : '../../assets/icons/card.png'"
               @click="selectPaymentMethod('card')"
               class="cursor-pointer w-[calc(50%-10px)]"
               alt="Оплата картой"
