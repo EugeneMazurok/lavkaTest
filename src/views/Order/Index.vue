@@ -85,7 +85,7 @@
                     <span>{{ order.total_price }} ₽</span>
                 </div>
             </div>
-            
+
             <div class="flex flex-col from-[#696969] to-[#505050] w-full bg-gradient-to-br rounded-xl">
 
                 <div class="p-2">
