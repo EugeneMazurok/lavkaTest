@@ -2,7 +2,7 @@
     "DIRECTUS": {
         "API": "https://stage.lavka-games.ru"
     },
-    "BOT": "https://bot.lavka-games.ru",
+    "BOT": "https://ctx.lavka-games.ru",
     "TEST_CHAT_ID": null,
     "DEEP_LINK": "lavka_games_bot/app"
 }
