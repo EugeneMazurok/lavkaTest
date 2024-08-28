@@ -337,7 +337,7 @@ const createOrder = async () => {
     let composition_user = result.map((el, index) =>
         `${index + 1}. ${el.about} - ${el.price - el.discount} ₽` +
         `${(el.type && el.type === 'price_subscription') ? ' (цена при условии наличия подписки на аккаунте)' : ''}` +
-        `${currentStatus.value === "success" ? ` - промокод ${promoData.promocode.toUpperCase()}` : ''}`
+        `${currentStatus.value === "success" && el.discount > 0 ? ` - промокод ${promoData.promocode.toUpperCase()}` : ''}`
     );
 
     let order_admin = `<b>Состав заказа:</b>\n${composition_admin.join('\n')}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`;
