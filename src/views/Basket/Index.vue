@@ -166,6 +166,7 @@ const updateBasketItems = async () => {
   } catch (error) {
     console.error('Ошибка при обновлении данных корзины:', error);
   }
+  setMainButton();
 };
 
 const finalPrice = computed(() => {
@@ -236,7 +237,7 @@ const resetDiscount = async () => {
 }
 
 const checkPromo = async () => {
-  setMainButton()
+
   await updateBasketItems();
 
   if (!promoData.promocode) {
@@ -252,7 +253,6 @@ const checkPromo = async () => {
 
     // Получаем список промокодов для текущей игры
     const promoCodesString = order.product.promocode || '';
-    console.log(promoCodesString)
     const productPromocodes = promoCodesString.split(',').map(code => code.trim()).filter(code => code !== '');
 
     if (productPromocodes.length === 0) {
@@ -293,7 +293,7 @@ const checkPromo = async () => {
     resetDiscount();
     notValidPromo.message = 'Такого промокода нет';
     currentStatus.value = 'error';
-    setMainButton()
+    setMainButton();
   }
 
   setMainButton();
