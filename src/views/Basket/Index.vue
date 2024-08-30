@@ -236,8 +236,6 @@ const resetDiscount = async () => {
 }
 
 const checkPromo = async () => {
-  webapp.MainButton.showProgress()
-  webapp.MainButton.disable()
   await updateBasketItems();
 
   if (!promoData.promocode) {
@@ -290,9 +288,7 @@ const checkPromo = async () => {
     notValidPromo.message = 'Такого промокода нет';
     currentStatus.value = 'error';
   }
-  webapp.MainButton.hideProgress()
-  webapp.MainButton.enable()
-  webapp.MainButton.show();
+  setMainButton()
 };
 
 
