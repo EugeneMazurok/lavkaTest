@@ -252,7 +252,12 @@ const checkPromo = async () => {
     // Получаем список промокодов для текущей игры
     const promoCodesString = order.product.promocode || '';
     console.log(promoCodesString)
-    const productPromocodes = promoCodesString.split(',').map(code => code.trim());
+    const productPromocodes = promoCodesString.split(',').map(code => code.trim()).filter(code => code !== '');
+
+    if (productPromocodes.length === 0) {
+      // Если нет промокодов для продукта, пропустите
+      continue;
+    }
 
     for (const promoCode of productPromocodes) {
       // Делаем запрос к таблице Promocodes для получения данных по промокоду
@@ -288,7 +293,8 @@ const checkPromo = async () => {
     notValidPromo.message = 'Такого промокода нет';
     currentStatus.value = 'error';
   }
-  setMainButton()
+
+  setMainButton();
 };
 
 
