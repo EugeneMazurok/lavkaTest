@@ -11,6 +11,7 @@ export default {
       },
       colors: {
         "bg_color": "#181818",
+        "2A2A2A": "#2A2A2A",
         "secondary_bg_color": "#000000",
         "text_color": "#FFFFFF",
         "hint_color": "#959595",

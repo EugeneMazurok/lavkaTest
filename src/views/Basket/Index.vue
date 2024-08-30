@@ -137,7 +137,8 @@ const setMainButton = () => {
     webapp.MainButton.show()
   }
 
-  webapp.MainButton.text = mainButtonText.value
+  webapp.MainButton.text = mainButtonText.value;
+  webapp.MainButton.show();
 }
 
 const finalPrice = computed(() => {
@@ -208,33 +209,48 @@ const resetDiscount = async () => {
 }
 
 const checkPromo = async () => {
+  webapp.MainButton.showProgress()
   if (!promoData.promocode) {
     notValidPromo.message = 'Обязательное поле';
     currentStatus.value = 'error';
     return;
   }
 
-  let foundAnyPromo = false; // Флаг для отслеживания, был ли вообще найден промокод
+  let foundAnyPromo = false;
 
   for (const order of orders.value) {
     order.discount = 0;
-    console.log(order)
-    for (const productPromocode of order.product.promocode) {
 
-      if (productPromocode.Promocodes_id.code.toUpperCase() === promoData.promocode.toUpperCase()) {
-        currentStatus.value = 'success';
-        notValidPromo.message = ''; // Сравниваем введенный промокод с каждым промокодом товара
-        const price = order.productOption?.plan?.price || 0;
+    // Получаем список промокодов для текущей игры
+    const promoCodesString = order.product.promocode || '';
+    console.log(promoCodesString)
+    const productPromocodes = promoCodesString.split(',').map(code => code.trim());
 
-        if (productPromocode.Promocodes_id.promo_procent > 0) {
-          order.promocodeDiscount = (price * productPromocode.Promocodes_id.promo_procent) / 100;
-        } else {
-          order.promocodeDiscount = productPromocode.Promocodes_id.promo_amount;
+    for (const promoCode of productPromocodes) {
+      // Делаем запрос к таблице Promocodes для получения данных по промокоду
+      const response = await client.request(readItems('Promocodes', {
+        filter: { code: { _eq: promoCode.toUpperCase() } }
+      }));
+
+      if (response.length > 0) {
+        const promocodeData = response[0];
+
+        if (promocodeData.code.toUpperCase() === promoData.promocode.toUpperCase()) {
+          currentStatus.value = 'success';
+          notValidPromo.message = '';
+
+          const price = order.productOption?.plan?.price || 0;
+
+          if (promocodeData.promo_procent > 0) {
+            order.promocodeDiscount = (price * promocodeData.promo_procent) / 100;
+          } else {
+            order.promocodeDiscount = promocodeData.promo_amount;
+          }
+
+          order.discount = order.promocodeDiscount;
+          foundAnyPromo = true;
+          break;
         }
-
-        order.discount = order.promocodeDiscount;  // Применяем скидку только если промокод найден
-        foundAnyPromo = true; // Устанавливаем флаг, что промокод был найден хотя бы раз
-        break; // Выходим из вложенного цикла по промокодам товара
       }
     }
   }
@@ -244,6 +260,7 @@ const checkPromo = async () => {
     notValidPromo.message = 'Такого промокода нет';
     currentStatus.value = 'error';
   }
+  webapp.MainButton.hideProgress()
 };
 
 
@@ -485,7 +502,7 @@ const updatePromocode = async () => {
                         @keyup.enter="(e) => { e.target.blur(); handleBlur(); }"
                     />
                       <button
-                          class="bg-bg_color text-white rounded-md px-2 py-1 mr-2"
+                          class="bg-bg_color text-white rounded-md px-2 py-1 mr-2 active:bg-2A2A2A"
                           @click="checkPromo"
                       >
                         Применить
