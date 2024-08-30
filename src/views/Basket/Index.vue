@@ -87,8 +87,18 @@ onDeactivated(() => {
 
 const mainButtonText = ref('Оформить заказ')
 const mainButtonClicked = async () => {
+  await updateBasketItems();
 
   if (buttonLoader.value) return
+
+  if (promoData.checkbox) {
+    await checkPromo();
+
+    // Если после проверки промокода статус не "success", прерываем выполнение
+    if (currentStatus.value !== 'success') {
+      return;
+    }
+  }
 
   if (promoData.checkbox && promoData.promocode === '') {
     console.log(promoData.promocode)
@@ -140,6 +150,23 @@ const setMainButton = () => {
   webapp.MainButton.text = mainButtonText.value;
   webapp.MainButton.show();
 }
+
+const updateBasketItems = async () => {
+  try {
+    for (let order of orders.value) {
+      const updatedProduct = await client.request(readItems('Games', {
+        filter: { id: { _eq: order.product.id } },
+        fields: ['*.*']
+      }));
+
+      if (updatedProduct && updatedProduct.length > 0) {
+        order.product = updatedProduct[0];
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка при обновлении данных корзины:', error);
+  }
+};
 
 const finalPrice = computed(() => {
   return basketStore.orders.reduce((total, order) => {
@@ -209,6 +236,8 @@ const resetDiscount = async () => {
 }
 
 const checkPromo = async () => {
+
+  await updateBasketItems();
   webapp.MainButton.showProgress()
   if (!promoData.promocode) {
     notValidPromo.message = 'Обязательное поле';
