@@ -152,6 +152,7 @@ const setMainButton = () => {
 }
 
 const updateBasketItems = async () => {
+  setMainButton();
   try {
     for (let order of orders.value) {
       const updatedProduct = await client.request(readItems('Games', {
@@ -242,6 +243,7 @@ const checkPromo = async () => {
   setMainButton();
 
   if (!promoData.promocode) {
+    setMainButton();
     notValidPromo.message = 'Обязательное поле';
     currentStatus.value = 'error';
     return;
