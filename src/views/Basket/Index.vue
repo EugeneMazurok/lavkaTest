@@ -259,7 +259,7 @@ const checkPromo = async () => {
     const productPromocodes = promoCodesString.split(',').map(code => code.trim()).filter(code => code !== '');
 
     if (productPromocodes.length === 0) {
-      // Если нет промокодов для продукта, пропустите
+      setMainButton();
       continue;
     }
 
@@ -277,7 +277,7 @@ const checkPromo = async () => {
           notValidPromo.message = '';
 
           const price = order.productOption?.plan?.price || 0;
-
+          setMainButton();
           if (promocodeData.promo_procent > 0) {
             order.promocodeDiscount = (price * promocodeData.promo_procent) / 100;
           } else {
@@ -286,6 +286,7 @@ const checkPromo = async () => {
 
           order.discount = order.promocodeDiscount;
           foundAnyPromo = true;
+          setMainButton();
           break;
         }
       }
