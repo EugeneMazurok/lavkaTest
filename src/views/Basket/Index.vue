@@ -239,6 +239,7 @@ const resetDiscount = async () => {
 const checkPromo = async () => {
 
   await updateBasketItems();
+  setMainButton();
 
   if (!promoData.promocode) {
     notValidPromo.message = 'Обязательное поле';
@@ -384,12 +385,12 @@ const createOrder = async () => {
     let composition_admin = result.map((el, index) =>
         `${index + 1}. ${el.about} - ${el.price - el.discount} ₽` +
         `${(el.type && el.type === 'price_subscription') ? ' (цена по подписке)' : ''}` +
-        `${currentStatus.value === "success" ? ` - промокод ${promoData.promocode.toUpperCase()}` : ''}`
+        `${currentStatus.value === "success" && el.discount > 0 ? ` - промокод ${promoData.promocode.toUpperCase()}` : ''}`
     );
 
     let composition_user = result.map((el, index) =>
         `${index + 1}. ${el.about} - ${el.price - el.discount} ₽` +
-        `${(el.type && el.type === 'price_subscription') ? ' (цена при условии наличия подписки на аккаунте)' : ''}` +
+        `${(el.type && el.type === 'price_subscription') ? ' (цена по подписке)' : ''}` +
         `${currentStatus.value === "success" && el.discount > 0 ? ` - промокод ${promoData.promocode.toUpperCase()}` : ''}`
     );
 

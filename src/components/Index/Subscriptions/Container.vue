@@ -30,7 +30,7 @@ const getSubscriptions = async () => {
     loading.value = true
 
     let response = await client.request(readItems('Subscriptions', {
-            fields: ['*.*.*'],
+            fields: ['*'],
             filter: {
                 status: {
                     "_eq": "published"
