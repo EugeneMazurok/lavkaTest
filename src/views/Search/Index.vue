@@ -18,7 +18,6 @@ const back = () => {
 }
 
 const client = createDirectus(config.DIRECTUS.API).with(rest())
-const loading = ref(false)
 
 const loading = ref(false)
 
