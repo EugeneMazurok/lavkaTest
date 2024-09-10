@@ -134,6 +134,8 @@ const getDonations = async () => {
   return response
 }
 
+console.log("test")
+
 const scrollableElement = ref(null)
 const currentScrollPosition = ref(0)
 
