@@ -157,6 +157,7 @@ const checkPromo = async () => {
   if (!promoData.promocode) {
     notValidPromo.message = 'Обязательное поле';
     currentStatus.value = 'error';
+    setMainButton();
     return;
   }
 
@@ -213,13 +214,16 @@ const checkPromo = async () => {
 
 const updateBasketItems = async () => {
   try {
+    setMainButton();
     for (let order of orders.value) {
+      setMainButton();
       const updatedProduct = await client.request(readItems('Games', {
         filter: { id: { _eq: order.product.id } },
         fields: ['*.*']
       }));
 
       if (updatedProduct && updatedProduct.length > 0) {
+        setMainButton();
         order.product = updatedProduct[0];
       }
     }
