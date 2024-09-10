@@ -183,6 +183,7 @@ const checkPromo = async () => {
         if (promocodeData.code.toUpperCase() === promoData.promocode.toUpperCase()) {
           currentStatus.value = 'success';
           notValidPromo.message = '';
+          setMainButton();
 
           const price = order.productOption?.plan?.price || 0;
           if (promocodeData.promo_procent > 0) {
@@ -223,6 +224,7 @@ const updateBasketItems = async () => {
       }
     }
   } catch (error) {
+    setMainButton();
     console.error('Ошибка при обновлении данных корзины:', error);
   }
 
