@@ -134,7 +134,7 @@ const getDonations = async () => {
   return response
 }
 
-console.log("test")
+console.log("z v russia goyda america suck my dick")
 
 const scrollableElement = ref(null)
 const currentScrollPosition = ref(0)
