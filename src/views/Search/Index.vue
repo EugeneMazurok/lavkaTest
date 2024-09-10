@@ -18,7 +18,6 @@ const back = () => {
 }
 
 const client = createDirectus(config.DIRECTUS.API).with(rest())
-
 const loading = ref(false)
 
 const games = ref(null)
@@ -162,6 +161,8 @@ onDeactivated(() => {
 })
 
 onMounted(async () => {
+  await nextTick()
+  inputRef.value.focus()
   loading.value = true
 
   const activeTab = window.localStorage.getItem('activeTab')
@@ -195,7 +196,7 @@ onMounted(async () => {
         <div class="w-full min-512:w-[480px]">
           <div class="flex transition-all items-center gap-x-2.5 text-left bg-hint_bg_color rounded-xl h-12 px-4 w-full">
             <Icon icon="ion:search" class="text-xl shrink-0" />
-            <input v-model="searchValue" @keyup.enter="(e) => { e.target.blur(); search() }" ref="inputRef" class="placeholder:text-hint_color line-clamp-1 text-sm w-full h-full outline-none bg-transparent" placeholder="Найти игру" />
+            <input v-model="searchValue" @keyup.enter="(e) => { e.focus(); e.target.blur(); search() }" ref="inputRef" class="placeholder:text-hint_color line-clamp-1 text-sm w-full h-full outline-none bg-transparent" placeholder="Найти игру" />
           </div>
         </div>
       </header>

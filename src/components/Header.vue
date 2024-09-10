@@ -29,9 +29,9 @@ defineProps({
   <div class="fixed top-0 left-0 right-0 z-20 bg-bg_color justify-center flex">
     <header class="flex p-4 gap-x-2 min-512:w-[512px] w-full">
       <router-link :to="{ name: 'SEARCH' }" class="flex active:opacity-75 transition-all items-center gap-x-2.5 text-left bg-hint_bg_color rounded-xl h-12 px-4 w-full">
-        <Icon icon="ion:search" class="text-xl shrink-0" />
-        <span class="text-hint_color line-clamp-1 text-sm">Найти игру</span>
-      </router-link>
+      <Icon icon="ion:search" class="text-xl shrink-0" />
+      <span class="text-hint_color line-clamp-1 text-sm">Найти игру</span>
+    </router-link>
 
       <router-link :to="{ name: 'BASKET' }" class="flex active:opacity-75 transition-all justify-center items-center h-12 w-12 shrink-0 bg-hint_bg_color rounded-xl relative">
         <Icon icon="ion:cart-outline" class="text-xl" />

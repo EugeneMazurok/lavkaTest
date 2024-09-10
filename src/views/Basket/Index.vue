@@ -2,7 +2,7 @@
 
 import config from '../../config/config.json'
 import {useRoute, useRouter} from 'vue-router'
-import {ref, reactive, onMounted, onUnmounted, watch, computed, onActivated, onDeactivated} from 'vue'
+import {ref, reactive, onMounted, computed, onActivated, onDeactivated} from 'vue'
 import {createDirectus, rest, readItems, createItem, createItems} from '@directus/sdk'
 import Header from '../../components/Header.vue'
 import {Icon} from '@iconify/vue'
@@ -13,7 +13,7 @@ import axios from 'axios'
 import arrowRightWhite from '../../assets/icons/arrow_right_white.png';
 import arrowRightRed from '../../assets/icons/arrow_right_red.png';
 import arrowRightGreen from '../../assets/icons/arrow_right_green.png';
-import generateUUID from '../../utils/generateUUID'
+
 import MainButton from '../../components/Product/MainButton.vue'
 
 const client = createDirectus(config.DIRECTUS.API).with(rest())
@@ -151,8 +151,64 @@ const setMainButton = () => {
   webapp.MainButton.show();
 }
 
-const updateBasketItems = async () => {
+const checkPromo = async () => {
+  await updateBasketItems();
+
+  if (!promoData.promocode) {
+    notValidPromo.message = 'Обязательное поле';
+    currentStatus.value = 'error';
+    return;
+  }
+
+  let foundAnyPromo = false;
+
+  for (const order of orders.value) {
+    order.discount = 0;
+
+    const promoCodesString = order.product.promocode || '';
+    const productPromocodes = promoCodesString.split(',').map(code => code.trim()).filter(code => code !== '');
+
+    if (productPromocodes.length === 0) {
+      continue;
+    }
+
+    for (const promoCode of productPromocodes) {
+      const response = await client.request(readItems('Promocodes', {
+        filter: { code: { _eq: promoCode.toUpperCase() } }
+      }));
+
+      if (response.length > 0) {
+        const promocodeData = response[0];
+
+        if (promocodeData.code.toUpperCase() === promoData.promocode.toUpperCase()) {
+          currentStatus.value = 'success';
+          notValidPromo.message = '';
+
+          const price = order.productOption?.plan?.price || 0;
+          if (promocodeData.promo_procent > 0) {
+            order.promocodeDiscount = (price * promocodeData.promo_procent) / 100;
+          } else {
+            order.promocodeDiscount = promocodeData.promo_amount;
+          }
+
+          order.discount = order.promocodeDiscount;
+          foundAnyPromo = true;
+          break;
+        }
+      }
+    }
+  }
+
+  if (!foundAnyPromo) {
+    resetDiscount();
+    notValidPromo.message = 'Такого промокода нет';
+    currentStatus.value = 'error';
+  }
+
   setMainButton();
+};
+
+const updateBasketItems = async () => {
   try {
     for (let order of orders.value) {
       const updatedProduct = await client.request(readItems('Games', {
@@ -167,6 +223,8 @@ const updateBasketItems = async () => {
   } catch (error) {
     console.error('Ошибка при обновлении данных корзины:', error);
   }
+
+  // Вызов setMainButton только после завершения всех операций
   setMainButton();
 };
 
@@ -237,75 +295,6 @@ const resetDiscount = async () => {
   })
 }
 
-const checkPromo = async () => {
-
-  await updateBasketItems();
-  setMainButton();
-
-  if (!promoData.promocode) {
-    setMainButton();
-    notValidPromo.message = 'Обязательное поле';
-    currentStatus.value = 'error';
-    return;
-  }
-
-  let foundAnyPromo = false;
-
-  for (const order of orders.value) {
-    order.discount = 0;
-
-    // Получаем список промокодов для текущей игры
-    const promoCodesString = order.product.promocode || '';
-    const productPromocodes = promoCodesString.split(',').map(code => code.trim()).filter(code => code !== '');
-
-    if (productPromocodes.length === 0) {
-      setMainButton();
-      continue;
-    }
-
-    for (const promoCode of productPromocodes) {
-      // Делаем запрос к таблице Promocodes для получения данных по промокоду
-      const response = await client.request(readItems('Promocodes', {
-        filter: { code: { _eq: promoCode.toUpperCase() } }
-      }));
-
-      if (response.length > 0) {
-        const promocodeData = response[0];
-
-        if (promocodeData.code.toUpperCase() === promoData.promocode.toUpperCase()) {
-          currentStatus.value = 'success';
-          notValidPromo.message = '';
-
-          const price = order.productOption?.plan?.price || 0;
-          setMainButton();
-          if (promocodeData.promo_procent > 0) {
-            order.promocodeDiscount = (price * promocodeData.promo_procent) / 100;
-          } else {
-            order.promocodeDiscount = promocodeData.promo_amount;
-          }
-
-          order.discount = order.promocodeDiscount;
-          foundAnyPromo = true;
-          setMainButton();
-          break;
-        }
-      }
-    }
-  }
-
-  if (!foundAnyPromo) {
-    resetDiscount();
-    notValidPromo.message = 'Такого промокода нет';
-    currentStatus.value = 'error';
-    setMainButton();
-  }
-
-  setMainButton();
-};
-
-
-
-// Сброс статуса при фокусе
 const resetStatus = () => {
   currentStatus.value = 'default';
 };
@@ -476,7 +465,6 @@ const updatePromocode = async () => {
     promoData.promocode = '';
     notValidPromo.error = false
     notValidPromo.message = ''
-    // Обнуляем значение, если чекбокс не отмечен
   }
   promoData.checkbox = !promoData.checkbox
 }
