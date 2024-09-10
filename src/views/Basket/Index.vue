@@ -153,7 +153,7 @@ const setMainButton = () => {
 
 const checkPromo = async () => {
   await updateBasketItems();
-
+  setMainButton();
   if (!promoData.promocode) {
     notValidPromo.message = 'Обязательное поле';
     currentStatus.value = 'error';
@@ -164,7 +164,7 @@ const checkPromo = async () => {
 
   for (const order of orders.value) {
     order.discount = 0;
-
+    setMainButton();
     const promoCodesString = order.product.promocode || '';
     const productPromocodes = promoCodesString.split(',').map(code => code.trim()).filter(code => code !== '');
 
@@ -176,7 +176,7 @@ const checkPromo = async () => {
       const response = await client.request(readItems('Promocodes', {
         filter: { code: { _eq: promoCode.toUpperCase() } }
       }));
-
+      setMainButton();
       if (response.length > 0) {
         const promocodeData = response[0];
 
