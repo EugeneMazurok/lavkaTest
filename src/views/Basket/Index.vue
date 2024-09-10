@@ -193,6 +193,7 @@ const checkPromo = async () => {
 
           order.discount = order.promocodeDiscount;
           foundAnyPromo = true;
+          setMainButton();
           break;
         }
       }
@@ -203,6 +204,7 @@ const checkPromo = async () => {
     resetDiscount();
     notValidPromo.message = 'Такого промокода нет';
     currentStatus.value = 'error';
+    setMainButton();
   }
 
   setMainButton();
