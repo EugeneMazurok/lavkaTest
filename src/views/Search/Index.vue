@@ -152,7 +152,6 @@ onActivated(async () => {
   webapp.BackButton.show()
 
   await nextTick()
-  inputRef.value.focus()
   scrollDown(scrollableElement, currentScrollPosition)
 })
 
@@ -163,7 +162,6 @@ onDeactivated(() => {
 
 onMounted(async () => {
   await nextTick()
-  inputRef.value.focus()
   loading.value = true
 
   const activeTab = window.localStorage.getItem('activeTab')
