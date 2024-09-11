@@ -361,7 +361,7 @@ const createOrder = async () => {
 
   const orders = await createOrderItems()
   const result = await client.request(createItems('order', orders))
-  if (!webapp.initDataUnsafe.user?.id) {
+  if (webapp.initDataUnsafe.user?.id) {
 
     const ids = result.map((el) => {
       return {order_id: el.id}
@@ -507,6 +507,7 @@ const updatePromocode = async () => {
                   :discount="currentStatus != 'error' ? el.discount : undefined"
               />
             </div>
+
 
             <div class="relative">
               <div class="flex flex-col py-2 gap-y-6">
