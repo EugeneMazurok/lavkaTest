@@ -93,11 +93,6 @@ const mainButtonClicked = async () => {
 
   if (promoData.checkbox) {
     await checkPromo();
-
-    // Если после проверки промокода статус не "success", прерываем выполнение
-    if (currentStatus.value !== 'success') {
-      return;
-    }
   }
 
   if (promoData.checkbox && promoData.promocode === '') {
@@ -190,11 +185,13 @@ const checkPromo = async () => {
           if (promocodeData.promo_procent > 0) {
             order.promocodeDiscount = (price * promocodeData.promo_procent) / 100;
           } else {
+            console.log(promocodeData.promo_amount)
             order.promocodeDiscount = promocodeData.promo_amount;
           }
 
           order.discount = order.promocodeDiscount;
           foundAnyPromo = true;
+          console.log(order)
           setMainButton();
           break;
         }
@@ -232,7 +229,6 @@ const updateBasketItems = async () => {
     console.error('Ошибка при обновлении данных корзины:', error);
   }
 
-  // Вызов setMainButton только после завершения всех операций
   setMainButton();
 };
 
@@ -321,6 +317,8 @@ const createOrderItems = async () => {
     if (el.productOption.plan?.title) {
       name = name + ' ' + el.productOption.plan.title;
     }
+
+    console.log(el.discount)
 
     const data = {
       Games: {
