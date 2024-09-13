@@ -196,33 +196,28 @@ const checkPromo = async () => {
     resetDiscount();
     notValidPromo.message = 'Такого промокода нет';
     currentStatus.value = 'error';
-    setMainButton();
+
   }
 
-  setMainButton();
 };
 
 const updateBasketItems = async () => {
   try {
-    setMainButton();
     for (let order of orders.value) {
-      setMainButton();
+
       const updatedProduct = await client.request(readItems('Games', {
         filter: { id: { _eq: order.product.id } },
         fields: ['*.*']
       }));
 
       if (updatedProduct && updatedProduct.length > 0) {
-        setMainButton();
         order.product = updatedProduct[0];
       }
     }
   } catch (error) {
-    setMainButton();
     console.error('Ошибка при обновлении данных корзины:', error);
   }
 
-  setMainButton();
 };
 
 const finalPrice = computed(() => {
