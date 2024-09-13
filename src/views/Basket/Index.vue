@@ -148,11 +148,9 @@ const setMainButton = () => {
 
 const checkPromo = async () => {
   await updateBasketItems();
-  setMainButton();
   if (!promoData.promocode) {
     notValidPromo.message = 'Обязательное поле';
     currentStatus.value = 'error';
-    setMainButton();
     return;
   }
 
@@ -160,7 +158,6 @@ const checkPromo = async () => {
 
   for (const order of orders.value) {
     order.discount = 0;
-    setMainButton();
     const promoCodesString = order.product.promocode || '';
     const productPromocodes = promoCodesString.split(',').map(code => code.trim()).filter(code => code !== '');
 
@@ -172,14 +169,12 @@ const checkPromo = async () => {
       const response = await client.request(readItems('Promocodes', {
         filter: { code: { _eq: promoCode.toUpperCase() } }
       }));
-      setMainButton();
       if (response.length > 0) {
         const promocodeData = response[0];
 
         if (promocodeData.code.toUpperCase() === promoData.promocode.toUpperCase()) {
           currentStatus.value = 'success';
           notValidPromo.message = '';
-          setMainButton();
 
           const price = order.productOption?.plan?.price || 0;
           if (promocodeData.promo_procent > 0) {
@@ -191,8 +186,6 @@ const checkPromo = async () => {
 
           order.discount = order.promocodeDiscount;
           foundAnyPromo = true;
-          console.log(order)
-          setMainButton();
           break;
         }
       }
