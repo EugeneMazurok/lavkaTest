@@ -191,6 +191,7 @@ const checkPromo = async () => {
       }
     }
   }
+  setMainButton()
 
   if (!foundAnyPromo) {
     resetDiscount();
