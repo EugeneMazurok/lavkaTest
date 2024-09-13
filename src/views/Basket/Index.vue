@@ -131,13 +131,14 @@ const mainButtonClicked = async () => {
 }
 
 const setMainButton = () => {
-
+  if (orders && orders.value.length > 0) {
     if (start_params.value?.sale === 'OFF') return
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
     webapp.MainButton.color = '#5AAD5D'
-    webapp.MainButton.show()
-
+  } else {
+    webapp.MainButton.disable()
+  }
 
   webapp.MainButton.text = mainButtonText.value;
   webapp.MainButton.show();
