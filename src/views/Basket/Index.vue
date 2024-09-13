@@ -58,13 +58,14 @@ onActivated(() => {
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
 
-  setMainButton()
 
   webapp.onEvent('mainButtonClicked', mainButtonClicked)
 })
 
 onMounted(async () => {
   await getStartParams()
+
+  setMainButton()
 
   loading.value = false
 })
@@ -191,7 +192,6 @@ const checkPromo = async () => {
       }
     }
   }
-  setMainButton()
 
   if (!foundAnyPromo) {
     resetDiscount();
