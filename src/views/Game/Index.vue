@@ -137,7 +137,8 @@ if (productInBasket) {
     if (productInBasket.productOption?.plan && newValue) {
 
         const findOption = basketStore.orders.find((el) => (el.product.id === product.value.id && el.productOption.plan.id === newValue.id && el.productOption.productCollection === activeTab.productCollection))
-        
+        console.log("PEDIKI")
+      console.log(findOption)
         if (findOption === undefined) {
             mainButtonText.value = 'Добавить в корзину'
         } else {
