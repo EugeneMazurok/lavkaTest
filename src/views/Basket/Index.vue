@@ -50,6 +50,7 @@ const updateHeight = () => {
 
 
 onActivated(() => {
+  setMainButton()
   window.addEventListener('resize', updateHeight);
   const activeTab = window.localStorage.getItem('activeTab');
   if (activeTab) {
@@ -65,7 +66,7 @@ onActivated(() => {
 onMounted(async () => {
   await getStartParams()
 
-  setMainButton()
+
 
   loading.value = false
 })
@@ -138,9 +139,6 @@ const setMainButton = () => {
     webapp.MainButton.show()
   } else {
     webapp.MainButton.disable()
-    mainButtonText.value = 'Пока нечего оформлять'
-    webapp.MainButton.color = '#5A5A5A'
-    webapp.MainButton.show()
   }
 
   webapp.MainButton.text = mainButtonText.value;
@@ -444,6 +442,7 @@ const createOrder = async () => {
 
     webapp.MainButton.hideProgress()
     webapp.MainButton.enable()
+    setMainButton()
   }
 
   buttonLoader.value = false
