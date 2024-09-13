@@ -28,6 +28,9 @@ const webapp = window.Telegram.WebApp
 const product = ref(null)
 const loading = ref(true)
 
+let activeTabWatch = null;
+let basketStoreWatch = null;
+
 const back = () => {
     if (window.history.length > 1) {
         router.go(-1)
@@ -39,6 +42,14 @@ const back = () => {
 onActivated(() => {
     webapp.onEvent('backButtonClicked', back)
     webapp.BackButton.show()
+
+  activeTabWatch = watch(() => activeTab, (newValue) => {
+    checkBasket(newValue.plan);
+  }, { deep: true });
+
+  basketStoreWatch = watch(() => basketStore.orders, () => {
+    checkBasket(activeTab.plan);
+  }, { deep: true });
 
     webapp.onEvent('mainButtonClicked', mainButtonClicked)
     if (product.value) {
@@ -54,6 +65,16 @@ onDeactivated(() => {
 
     webapp.offEvent('mainButtonClicked', mainButtonClicked)
     webapp.MainButton.hide()
+
+  if (activeTabWatch) {
+    activeTabWatch();
+    activeTabWatch = null;
+  }
+
+  if (basketStoreWatch) {
+    basketStoreWatch();
+    basketStoreWatch = null;
+  }
 })
 
 onMounted(async () => {
@@ -155,14 +176,6 @@ if (productInBasket) {
 
 webapp.MainButton.text = mainButtonText.value
 }
-
-watch(() => activeTab, (newValue) => {
-    checkBasket(newValue.plan)
-}, { deep: true })
-
-watch(() => basketStore.orders, () => {
-    checkBasket(activeTab.plan)
-}, { deep: true })
 
 const share = () => {
     let reply = product.value.title
