@@ -176,7 +176,7 @@ const share = () => {
                     >
 
                         <swiper-slide v-if="product.cover">
-                            <img :src="config.DIRECTUS.API + '/assets/' + product.cover.filename_disk" class="w-full h-full object-cover" />
+                            <img :src="config.DIRECTUS.API + '/assets/' + product.cover" class="w-full h-full object-cover" />
                         </swiper-slide>
 
                         <swiper-slide v-if="product.images && product.images.length > 0" v-for="el, index in product.images" :key="index">

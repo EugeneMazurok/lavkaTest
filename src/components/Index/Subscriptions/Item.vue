@@ -32,7 +32,7 @@ const onNonBannerImageLoad = () => {
             <!-- Image -->
             <img 
                 v-if="data.cover" 
-                :src="config.DIRECTUS.API + '/assets/' + data.cover.filename_disk" 
+                :src="config.DIRECTUS.API + '/assets/' + data.cover"
                 @load="onBannerImageLoad" 
                 class="object-cover w-full h-full" 
                 :class="{ 'hidden': !bannerImageLoaded }"
