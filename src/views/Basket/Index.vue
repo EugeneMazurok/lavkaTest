@@ -50,12 +50,13 @@ const updateHeight = () => {
 
 
 onActivated(() => {
-  setMainButton()
+
   window.addEventListener('resize', updateHeight);
   const activeTab = window.localStorage.getItem('activeTab');
   if (activeTab) {
     platform.value = JSON.parse(activeTab).platform;
   }
+  setMainButton()
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
 
@@ -135,9 +136,12 @@ const setMainButton = () => {
     if (start_params.value?.sale === 'OFF') return
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
-    webapp.MainButton.color = '#5AAD5D'
+    webapp.MainButton.color = '#5AAD5D' ? platform === 'Xbox' : '#2E60E7'
   } else {
     webapp.MainButton.disable()
+    mainButtonText.value = 'Пока нечего оформлять'
+    webapp.MainButton.color = '#5A5A5A'
+    webapp.MainButton.show()
   }
 
   webapp.MainButton.text = mainButtonText.value;
