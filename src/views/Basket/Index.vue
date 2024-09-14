@@ -136,7 +136,9 @@ const setMainButton = () => {
     if (start_params.value?.sale === 'OFF') return
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
-    webapp.MainButton.color = '#5AAD5D'
+    const activeTab = window.localStorage.getItem('activeTab');
+    console.log(JSON.parse(activeTab).color)
+    webapp.MainButton.color = JSON.parse(activeTab).color
   } else {
     webapp.MainButton.disable()
     mainButtonText.value = 'Пока нечего оформлять'
