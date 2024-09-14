@@ -137,6 +137,7 @@ const setMainButton = () => {
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
     webapp.MainButton.color = '#5AAD5D' ? platform.value === 'Xbox' : '#2E60E7'
+    webapp.MainButton.show();
   } else {
     webapp.MainButton.disable()
     mainButtonText.value = 'Пока нечего оформлять'
