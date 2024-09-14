@@ -77,7 +77,7 @@ onMounted(async () => {
                 </div>
 
                 <div v-else-if="product.product.cover" class="w-full h-full">
-                    <img :src="config.DIRECTUS.API + '/assets/' + product.product.cover.filename_disk" class="object-cover w-full h-full rounded-xl" />
+                    <img :src="config.DIRECTUS.API + '/assets/' + product.product.cover" class="object-cover w-full h-full rounded-xl" />
                 </div>
 
                 <div class="w-full h-full" v-else-if="product.product.images && product.product.images.length > 0">
