@@ -21,7 +21,7 @@ const onImageLoad = () => {
             
             <!-- Image -->
             <img 
-                v-if="product.cover" 
+                v-if="product.cover"
                 :src="config.DIRECTUS.API + '/assets/' + product.cover.id" 
                 @load="onImageLoad" 
                 class="w-full h-full object-cover" 
