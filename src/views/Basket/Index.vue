@@ -176,9 +176,8 @@ const checkPromo = async () => {
 
           const price = order.productOption?.plan?.price || 0;
           if (promocodeData.promo_procent > 0) {
-            order.promocodeDiscount = (price * promocodeData.promo_procent) / 100;
+            order.promocodeDiscount = Math.round((price * promocodeData.promo_procent) / 100);
           } else {
-            console.log(promocodeData.promo_amount)
             order.promocodeDiscount = promocodeData.promo_amount;
           }
 
