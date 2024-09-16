@@ -140,13 +140,13 @@ const mainButtonClicked = async () => {
 
 const setMainButton = () => {
   if (orders && orders.value.length > 0) {
-    webapp.MainButton.show();
-    if (start_params.value?.sale === 'OFF') return
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
     const activeTab = window.localStorage.getItem('activeTab');
     webapp.MainButton.color = JSON.parse(activeTab).color
     webapp.MainButton.show()
+    if (start_params.value?.sale === 'OFF') return
+
   } else {
     webapp.MainButton.disable()
     mainButtonText.value = 'Пока нечего оформлять'
