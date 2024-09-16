@@ -144,7 +144,8 @@ const setMainButton = () => {
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
     const activeTab = window.localStorage.getItem('activeTab');
-    webapp.MainButton.color = null
+    webapp.MainButton.color = JSON.parse(activeTab).color
+    webapp.MainButton.show()
   } else {
     webapp.MainButton.disable()
     mainButtonText.value = 'Пока нечего оформлять'
