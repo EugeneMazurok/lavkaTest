@@ -69,6 +69,7 @@ onActivated(() => {
 })
 
 onMounted(async () => {
+  setMainButton()
   await getStartParams()
 
 
