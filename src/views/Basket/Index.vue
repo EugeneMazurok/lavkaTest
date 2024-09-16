@@ -140,6 +140,7 @@ const mainButtonClicked = async () => {
 
 const setMainButton = () => {
   if (orders && orders.value.length > 0) {
+    webapp.MainButton.show();
     if (start_params.value?.sale === 'OFF') return
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
