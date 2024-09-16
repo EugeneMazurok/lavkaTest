@@ -62,7 +62,7 @@ onActivated(() => {
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
   basketWatchStop = watch(() => orders.value.length, (newLength) => {
-    setMainButton() // Обновляем состояние кнопки при изменении количества товаров в корзине
+    setMainButton()
   })
 
   webapp.onEvent('mainButtonClicked', mainButtonClicked)
@@ -144,7 +144,6 @@ const setMainButton = () => {
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
     const activeTab = window.localStorage.getItem('activeTab');
-    console.log(JSON.parse(activeTab).color)
     webapp.MainButton.color = JSON.parse(activeTab).color
   } else {
     webapp.MainButton.disable()
@@ -594,7 +593,7 @@ const updatePromocode = async () => {
             </div>
 
             <MainButton
-                v-if="!webapp.initDataUnsafe?.user && start_params?.sale !== 'OFF'"
+                v-if="start_params?.sale !== 'OFF'"
                 :title="mainButtonText"
                 @submit="mainButtonClicked"
                 :buttonLoader="buttonLoader"
