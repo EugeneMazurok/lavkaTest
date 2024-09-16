@@ -2,7 +2,7 @@
 
 import config from '../../config/config.json'
 import {useRoute, useRouter} from 'vue-router'
-import {ref, reactive, onMounted, computed, onActivated, onDeactivated} from 'vue'
+import {ref, reactive, onMounted, computed, onActivated, onDeactivated, watch} from 'vue'
 import {createDirectus, rest, readItems, createItem, createItems} from '@directus/sdk'
 import Header from '../../components/Header.vue'
 import {Icon} from '@iconify/vue'
@@ -44,6 +44,8 @@ const getStartParams = async () => {
 }
 const screenHeight = ref(document.documentElement.clientHeight);
 
+let basketWatchStop = null
+
 const updateHeight = () => {
   screenHeight.value = document.documentElement.clientHeight;
 };
@@ -59,7 +61,9 @@ onActivated(() => {
   setMainButton()
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
-
+  basketWatchStop = watch(() => orders.value.length, (newLength) => {
+    setMainButton() // Обновляем состояние кнопки при изменении количества товаров в корзине
+  })
 
   webapp.onEvent('mainButtonClicked', mainButtonClicked)
 })
@@ -86,6 +90,9 @@ onDeactivated(() => {
   promoData.promocode = ''
   notValidPromo.error = false
   notValidPromo.message = ''
+  if (basketWatchStop) {
+    basketWatchStop = null
+  }
 })
 
 const mainButtonText = ref('Оформить заказ')
