@@ -53,12 +53,12 @@ const updateHeight = () => {
 
 onActivated(() => {
 
+  setMainButton()
   window.addEventListener('resize', updateHeight);
   const activeTab = window.localStorage.getItem('activeTab');
   if (activeTab) {
     platform.value = JSON.parse(activeTab).platform;
   }
-  setMainButton()
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
   basketWatchStop = watch(() => orders.value.length, (newLength) => {
@@ -593,7 +593,7 @@ const updatePromocode = async () => {
             </div>
 
             <MainButton
-                v-if="start_params?.sale !== 'OFF'"
+                v-if="!webapp.initDataUnsafe?.user && start_params?.sale !== 'OFF'"
                 :title="mainButtonText"
                 @submit="mainButtonClicked"
                 :buttonLoader="buttonLoader"
