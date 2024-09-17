@@ -24,7 +24,7 @@ const route = useRoute()
 const webapp = window.Telegram.WebApp
 
 const loading = ref(true)
-console.log("tes")
+
 const back = () => {
   router.go(-1)
 }
@@ -50,15 +50,23 @@ const updateHeight = () => {
   screenHeight.value = document.documentElement.clientHeight;
 };
 
+const getPlatformFromLocalStorage = () => {
+  try {
+    const activeTab = window.localStorage.getItem('activeTab')
+    if (activeTab) {
+      return JSON.parse(activeTab).platform || 'Xbox' // Значение по умолчанию
+    }
+  } catch (e) {
+    console.error('Ошибка при чтении из localStorage', e)
+  }
+  return 'defaultPlatform' // Значение по умолчанию
+}
+
 
 onActivated(() => {
-
+  platform.value = getPlatformFromLocalStorage()
   setMainButton()
   window.addEventListener('resize', updateHeight);
-  const activeTab = window.localStorage.getItem('activeTab');
-  if (activeTab) {
-    platform.value = JSON.parse(activeTab).platform;
-  }
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
   basketWatchStop = watch(() => orders.value.length, (newLength) => {
@@ -69,6 +77,7 @@ onActivated(() => {
 })
 
 onMounted(async () => {
+  platform.value = getPlatformFromLocalStorage()
   setMainButton()
   await getStartParams()
 
@@ -143,8 +152,7 @@ const setMainButton = () => {
   if (orders && orders.value.length > 0) {
     webapp.MainButton.enable()
     mainButtonText.value = 'Оформить заказ'
-    const activeTab = window.localStorage.getItem('activeTab');
-    webapp.MainButton.color = JSON.parse(activeTab).color
+    webapp.MainButton.color = JSON.parse(window.localStorage.getItem('activeTab')).color || "#5A5A5A"
     webapp.MainButton.show()
     if (start_params.value?.sale === 'OFF') return
 
