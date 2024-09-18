@@ -31,14 +31,14 @@ const start_params = ref(null)
 const handleFocus = () => {
   const mainElement = document.querySelector('body');
   if (mainElement) {
-    mainElement.classList.add('pb-80'); // Добавьте нужный отступ
+    mainElement.classList.add('pb-100'); // Добавьте нужный отступ
   }
 };
 
 const handleBlur = () => {
   const mainElement = document.querySelector('body');
   if (mainElement) {
-    mainElement.classList.remove('pb-80');
+    mainElement.classList.remove('pb-100');
   }
 };
 
