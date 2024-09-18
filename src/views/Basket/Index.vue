@@ -339,7 +339,7 @@ const manualeMode = async () => {
                                 <div class="flex flex-col gap-y-2">
                                     <input
                                         :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px]', notValidEmail.error ? 'border-red' : 'border-transparent']"
-                                        v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email" placeholder="Введите e-mail для чека"
+                                        v-model="otherData.mail" type="email" placeholder="Введите e-mail для чека"
                                         @focus="() => { notValidEmail.error = false; }"
                                     />
 
