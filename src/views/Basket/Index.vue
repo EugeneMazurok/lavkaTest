@@ -1,16 +1,15 @@
 <script setup>
 
 import config from '../../config/config.json'
-import { useRoute, useRouter } from 'vue-router'
-import { ref, reactive, onMounted, onUnmounted, watch, computed, onActivated, onDeactivated } from 'vue'
-import { createDirectus, rest, readItems, createItem, createItems } from '@directus/sdk'
+import {useRoute, useRouter} from 'vue-router'
+import {computed, onActivated, onDeactivated, onMounted, reactive, ref, watch} from 'vue'
+import {createDirectus, createItem, createItems, readItems, rest} from '@directus/sdk'
 import Header from '../../components/Header.vue'
-import { Icon } from '@iconify/vue'
-import { useBasketStore } from '../../store/basket'
+import {Icon} from '@iconify/vue'
+import {useBasketStore} from '../../store/basket'
 import Item from '../../components/Basket/Item.vue'
 import isValidEmail from '../../utils/isValidEmail'
 import axios from 'axios'
-import generateUUID from '../../utils/generateUUID'
 import MainButton from '../../components/Product/MainButton.vue'
 
 const client = createDirectus(config.DIRECTUS.API).with(rest())
@@ -30,15 +29,18 @@ const start_params = ref(null)
 
 const handleFocus = () => {
   const mainElement = document.querySelector('body');
-  if (mainElement) {
-    mainElement.classList.add('pb-100'); // Добавьте нужный отступ
+  const keyboardHeight = window.innerHeight - screenHeight.value;
+
+  if (mainElement && keyboardHeight > 0) {
+    mainElement.style.paddingBottom = `${keyboardHeight}px`;
   }
 };
 
 const handleBlur = () => {
   const mainElement = document.querySelector('body');
+
   if (mainElement) {
-    mainElement.classList.remove('pb-100');
+    mainElement.style.paddingBottom = '0px';
   }
 };
 
@@ -83,8 +85,8 @@ onDeactivated(() => {
 const screenHeight = ref(window.innerHeight)
 
 const updateHeight = () => {
-  screenHeight.value = window.innerHeight
-}
+  screenHeight.value = window.visualViewport?.height || window.innerHeight;
+};
 
 const mainButtonText = ref('Оформить заказ')
 const mainButtonClicked = async () => {
@@ -101,12 +103,10 @@ const mainButtonClicked = async () => {
     } else
 
     if (!isValidEmail(otherData.mail)) {
-
         notValidEmail.error = true
         notValidEmail.message = 'Некорректно введён e-mail'
         webapp.HapticFeedback.notificationOccurred('error')
         return
-
     }
 
     if (start_params.value.sale === 'MANUAL') {
