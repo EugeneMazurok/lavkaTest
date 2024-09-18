@@ -28,6 +28,10 @@ const back = () => {
 
 const start_params = ref(null)
 
+const scrollToInput = (inputElement) => {
+  inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 const getStartParams = async () => {
     let response = await client.request(readItems('start_params', {
         fields: ['*']
@@ -49,7 +53,7 @@ onActivated(() => {
 
 onMounted(async () => {
     await getStartParams()
-
+    window.addEventListener('resize', updateHeight)
     loading.value = false
 })
 
@@ -340,7 +344,7 @@ const manualeMode = async () => {
                                     <input
                                         :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px]', notValidEmail.error ? 'border-red' : 'border-transparent']"
                                         v-model="otherData.mail" type="email" placeholder="Введите e-mail для чека"
-                                        @focus="() => { notValidEmail.error = false; }"
+                                        @focus="() => { notValidEmail.error = false; scrollToInput($event.target);}"
                                     />
 
                                     <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
