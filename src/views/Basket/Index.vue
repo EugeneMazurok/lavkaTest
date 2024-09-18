@@ -58,12 +58,10 @@ onActivated(() => {
 
     webapp.onEvent('mainButtonClicked', mainButtonClicked)
 
-    window.addEventListener('resize', updateHeight)
 })
 
 onMounted(async () => {
     await getStartParams()
-    window.addEventListener('resize', updateHeight)
     loading.value = false
 })
 
@@ -76,7 +74,6 @@ onDeactivated(() => {
     webapp.MainButton.hide()
     webapp.MainButton.enable()
 
-    window.removeEventListener('resize', updateHeight)
 })
 
 const screenHeight = ref(window.innerHeight)
