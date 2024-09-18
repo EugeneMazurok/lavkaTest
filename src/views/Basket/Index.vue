@@ -29,18 +29,15 @@ const start_params = ref(null)
 
 const handleFocus = () => {
   const mainElement = document.querySelector('body');
-  const keyboardHeight = window.innerHeight - screenHeight.value;
-
-  if (mainElement && keyboardHeight > 0) {
-    mainElement.style.paddingBottom = `${keyboardHeight}px`;
+  if (mainElement) {
+    mainElement.classList.add('pb-80'); // Добавьте нужный отступ
   }
 };
 
 const handleBlur = () => {
   const mainElement = document.querySelector('body');
-
   if (mainElement) {
-    mainElement.style.paddingBottom = '0px';
+    mainElement.classList.remove('pb-80');
   }
 };
 
@@ -126,7 +123,8 @@ const setMainButton = () => {
         if (start_params.value?.sale === 'OFF') return
         webapp.MainButton.enable()
         mainButtonText.value = 'Оформить заказ'
-        webapp.MainButton.color = '#5AAD5D'
+        const activeTab = window.localStorage.getItem('activeTab');
+        webapp.MainButton.color = JSON.parse(activeTab).color
         webapp.MainButton.show()
     } else {
         webapp.MainButton.disable()
