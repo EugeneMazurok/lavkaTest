@@ -28,9 +28,19 @@ const back = () => {
 
 const start_params = ref(null)
 
-const scrollToInput = (inputElement) => {
-  inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
+const handleFocus = () => {
+  const mainElement = document.querySelector('body');
+  if (mainElement) {
+    mainElement.classList.add('pb-80'); // Добавьте нужный отступ
+  }
+};
+
+const handleBlur = () => {
+  const mainElement = document.querySelector('body');
+  if (mainElement) {
+    mainElement.classList.remove('pb-80');
+  }
+};
 
 const getStartParams = async () => {
     let response = await client.request(readItems('start_params', {
@@ -341,11 +351,13 @@ const manualeMode = async () => {
                                 </div>
 
                                 <div class="flex flex-col gap-y-2">
-                                    <input
-                                        :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px]', notValidEmail.error ? 'border-red' : 'border-transparent']"
-                                        v-model="otherData.mail" type="email" placeholder="Введите e-mail для чека"
-                                        @focus="() => { notValidEmail.error = false; scrollToInput($event.target);}"
-                                    />
+                                  <input
+                                      :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
+                                      v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
+                                      placeholder="Введите e-mail для чека"
+                                      @focus="(e) => { notValidEmail.error = false; handleFocus(e); }"
+                                      @blur="handleBlur"
+                                  />
 
                                     <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
                                 </div>
