@@ -124,7 +124,7 @@ const setMainButton = () => {
         webapp.MainButton.enable()
         mainButtonText.value = 'Оформить заказ'
         const activeTab = window.localStorage.getItem('activeTab');
-        webapp.MainButton.color = JSON.parse(activeTab).color
+        webapp.MainButton.color = JSON.parse(activeTab).color || '#5AAD5D'
         webapp.MainButton.show()
     } else {
         webapp.MainButton.disable()
