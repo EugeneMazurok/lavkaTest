@@ -306,7 +306,7 @@ const manualeMode = async () => {
 </script>
 
 <template>
-    <main class="h-screen pt-20 overflow-y-auto flex flex-col">
+    <main class="min-h-[100vh] pt-20 overflow-y-auto flex flex-col">
         <div class="pb-4">
             <div class="flex flex-col">
                 <Header />
