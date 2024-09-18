@@ -51,6 +51,8 @@ const getStartParams = async () => {
 }
 
 onActivated(() => {
+
+  window.addEventListener('resize', updateHeight)
     webapp.onEvent('backButtonClicked', back)
     webapp.BackButton.show()
 
@@ -62,6 +64,7 @@ onActivated(() => {
 
 onMounted(async () => {
     await getStartParams()
+    window.addEventListener('resize', updateHeight)
     loading.value = false
 })
 
@@ -74,6 +77,7 @@ onDeactivated(() => {
     webapp.MainButton.hide()
     webapp.MainButton.enable()
 
+    window.removeEventListener('resize', updateHeight)
 })
 
 const screenHeight = ref(window.innerHeight)
