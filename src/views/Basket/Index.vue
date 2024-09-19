@@ -380,19 +380,20 @@ const manualeMode = async () => {
             <div v-else class="flex justify-center items-center" :style="{ height: `${screenHeight-142}px` }">
               <span class="text-xl">Корзина пуста</span>
             </div>
-            <!-- Кнопка MainButton всегда видна -->
-            <MainButton
-                :title="mainButtonText"
-                :color="buttonColor"
-                @submit="mainButtonClicked"
-                :buttonLoader="buttonLoader"
-            />
+
           </div>
-
         </transition>
-
-
       </div>
+    </div>
+
+    <!-- Кнопка MainButton всегда видна -->
+    <div class="fixed bottom-0 left-0 right-0">
+      <MainButton
+          :title="mainButtonText"
+          :color="buttonColor"
+          @submit="mainButtonClicked"
+          :buttonLoader="buttonLoader"
+      />
     </div>
   </main>
 </template>
