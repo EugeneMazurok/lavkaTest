@@ -386,12 +386,12 @@ const manualeMode = async () => {
       </div>
     </div>
 
-
+    <MainButton
+        :title="mainButtonText"
+        :color="buttonColor"
+        @submit="mainButtonClicked"
+        :buttonLoader="buttonLoader"
+    />
   </main>
-  <MainButton
-      :title="mainButtonText"
-      :color="buttonColor"
-      @submit="mainButtonClicked"
-      :buttonLoader="buttonLoader"
-  />
+
 </template>
