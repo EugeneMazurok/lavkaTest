@@ -119,21 +119,15 @@ const mainButtonClicked = async () => {
 }
 
 const setMainButton = () => {
-    if (basketStore.orders && basketStore.orders.length > 0) {
-        if (start_params.value?.sale === 'OFF') return
-        webapp.MainButton.enable()
-        mainButtonText.value = 'Оформить заказ'
-        const activeTab = window.localStorage.getItem('activeTab');
-        webapp.MainButton.color = JSON.parse(activeTab).color || '#5AAD5D'
-        webapp.MainButton.show()
-    } else {
-        webapp.MainButton.disable()
-        mainButtonText.value = 'Пока нечего оформлять'
-        webapp.MainButton.color = '#5A5A5A'
-        webapp.MainButton.show()
-    }
-
-    webapp.MainButton.text = mainButtonText.value
+  if (basketStore.orders && basketStore.orders.length > 0) {
+    if (start_params.value?.sale === 'OFF') return
+    webapp.MainButton.hide()  // Отключаем встроенную кнопку
+    mainButtonText.value = 'Оформить заказ'
+    const activeTab = window.localStorage.getItem('activeTab');
+  } else {
+    webapp.MainButton.hide()  // Отключаем встроенную кнопку
+    mainButtonText.value = 'Пока нечего оформлять'
+  }
 }
 
 watch(() => basketStore.orders, (newValue) => {
@@ -373,8 +367,7 @@ const manualeMode = async () => {
                             </transition>
                         </div>
 
-                        <MainButton 
-                            v-if="!webapp.initDataUnsafe?.user && start_params?.sale !== 'OFF'"
+                        <MainButton
                             :title="mainButtonText"
                             @submit="mainButtonClicked"
                             :buttonLoader="buttonLoader"
