@@ -308,8 +308,8 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="min-h-[100vh] pt-20 flex flex-col">
-    <div class="flex-1 overflow-y-auto" style="-webkit-overflow-scrolling: touch">
+  <main class="min-h-[100vh] overflow-y-auto pt-20 flex flex-col">
+    <div class="flex-1 " style="-webkit-overflow-scrolling: touch">
       <div class="flex flex-col">
         <Header />
 
