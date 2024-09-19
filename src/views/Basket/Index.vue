@@ -307,8 +307,8 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="min-h-[100vh] pt-20 overflow-y-auto flex flex-col">
-    <div class="pb-4">
+  <main class="min-h-screen pt-20 flex flex-col">
+    <div class="flex-1 overflow-y-auto">
       <div class="flex flex-col">
         <Header />
 
@@ -343,11 +343,11 @@ const manualeMode = async () => {
                   <div class="flex flex-col gap-y-1">
                     <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
                       <span class="font-medium">У меня нет аккаунта</span>
-                      <span class="w-8 h-8 rounded-lg bg-white shadow-sm  overflow-clip">
-                                                <span v-if="otherData.checkbox" class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
-                                                    <Icon icon="mdi:check-bold" class="text-2xl" />
-                                                </span>
-                                            </span>
+                      <span class="w-8 h-8 rounded-lg bg-white shadow-sm overflow-clip">
+                        <span v-if="otherData.checkbox" class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
+                          <Icon icon="mdi:check-bold" class="text-2xl" />
+                        </span>
+                      </span>
                     </button>
 
                     <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
@@ -380,16 +380,16 @@ const manualeMode = async () => {
             <div v-else class="flex justify-center items-center" :style="{ height: `${screenHeight-142}px` }">
               <span class="text-xl">Корзина пуста</span>
             </div>
-
-            <!-- Кнопка MainButton всегда видна -->
-            <MainButton
-                :title="mainButtonText"
-                :color="buttonColor"
-                @submit="mainButtonClicked"
-                :buttonLoader="buttonLoader"
-            />
           </div>
         </transition>
+
+        <!-- Кнопка MainButton всегда видна -->
+        <MainButton
+            :title="mainButtonText"
+            :color="buttonColor"
+            @submit="mainButtonClicked"
+            :buttonLoader="buttonLoader"
+        />
       </div>
     </div>
   </main>
