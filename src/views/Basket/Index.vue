@@ -308,7 +308,7 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="min-h-[100vh] overflow-y-auto pt-20 flex flex-col">
+  <main class="min-h-[100vh] pt-20 flex flex-col">
     <div class="flex-1 " style="-webkit-overflow-scrolling: touch">
       <div class="flex flex-col">
         <Header />
@@ -321,7 +321,7 @@ const manualeMode = async () => {
         </div>
 
         <transition name="fade" appear>
-          <div class="px-4 flex flex-col gap-y-4">
+          <div class="px-4 flex flex-col overflow-y-auto gap-y-4">
             <div v-if="basketStore.orders && basketStore.orders.length > 0" class="flex flex-col gap-y-4">
               <div class="flex text-xl justify-between items-center font-medium">
                 <h2>Корзина</h2>
