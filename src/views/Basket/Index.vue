@@ -44,14 +44,14 @@ const handleBlur = () => {
 
 watch(() => basketStore.orders, (newValue) => {
   setMainButton()
-}, { deep: true })
+}, {deep: true})
 
 const getStartParams = async () => {
-    let response = await client.request(readItems('start_params', {
-        fields: ['*']
-    }))
+  let response = await client.request(readItems('start_params', {
+    fields: ['*']
+  }))
 
-    start_params.value = response
+  start_params.value = response
 }
 
 onActivated(() => {
@@ -59,33 +59,32 @@ onActivated(() => {
   webapp.MainButton.hide();
   setMainButton()
   window.addEventListener('resize', updateHeight)
-    webapp.onEvent('backButtonClicked', back)
-    webapp.BackButton.show()
+  webapp.onEvent('backButtonClicked', back)
+  webapp.BackButton.show()
 
 
-
-    webapp.onEvent('mainButtonClicked', mainButtonClicked)
+  webapp.onEvent('mainButtonClicked', mainButtonClicked)
 
 })
 
 onMounted(async () => {
 
   setMainButton()
-    await getStartParams()
-    window.addEventListener('resize', updateHeight)
-    loading.value = false
+  await getStartParams()
+  window.addEventListener('resize', updateHeight)
+  loading.value = false
 })
 
 onDeactivated(() => {
-    handleBlur()
-    webapp.offEvent('backButtonClicked', back)
-    webapp.BackButton.hide()
+  handleBlur()
+  webapp.offEvent('backButtonClicked', back)
+  webapp.BackButton.hide()
 
-    webapp.offEvent('mainButtonClicked', mainButtonClicked)
-    webapp.MainButton.hide()
-    webapp.MainButton.enable()
+  webapp.offEvent('mainButtonClicked', mainButtonClicked)
+  webapp.MainButton.hide()
+  webapp.MainButton.enable()
 
-    window.removeEventListener('resize', updateHeight)
+  window.removeEventListener('resize', updateHeight)
 })
 
 const screenHeight = ref(window.innerHeight)
@@ -97,33 +96,29 @@ const updateHeight = () => {
 const mainButtonText = ref('Оформить заказ')
 const mainButtonClicked = async () => {
 
-    if (buttonLoader.value) return
+  if (buttonLoader.value) return
 
-    if (!otherData.mail) {
+  if (!otherData.mail) {
 
-        notValidEmail.error = true
-        notValidEmail.message = 'Обязательное поле'
-        webapp.HapticFeedback.notificationOccurred('error')
-        return
+    notValidEmail.error = true
+    notValidEmail.message = 'Обязательное поле'
+    webapp.HapticFeedback.notificationOccurred('error')
+    return
 
-    } else
+  } else if (!isValidEmail(otherData.mail)) {
+    notValidEmail.error = true
+    notValidEmail.message = 'Некорректно введён e-mail'
+    webapp.HapticFeedback.notificationOccurred('error')
+    return
+  }
 
-    if (!isValidEmail(otherData.mail)) {
-        notValidEmail.error = true
-        notValidEmail.message = 'Некорректно введён e-mail'
-        webapp.HapticFeedback.notificationOccurred('error')
-        return
-    }
-
-    if (start_params.value.sale === 'MANUAL') {
-        await manualeMode()
-    } else
-    if (start_params.value.sale === 'TEST_TINKOFF') {
-        await testMode()
-    } else
-    if (start_params.value.sale === 'PROD_TINKOFF') {
-        await prodMode()
-    }
+  if (start_params.value.sale === 'MANUAL') {
+    await manualeMode()
+  } else if (start_params.value.sale === 'TEST_TINKOFF') {
+    await testMode()
+  } else if (start_params.value.sale === 'PROD_TINKOFF') {
+    await prodMode()
+  }
 
 }
 
@@ -151,180 +146,184 @@ const finalPrice = computed(() => {
 })
 
 const otherData = reactive({
-    mail: '',
-    checkbox: false
+  mail: '',
+  checkbox: false
 })
 
 const notValidEmail = reactive({
-    error: false,
-    message: ''
+  error: false,
+  message: ''
 })
 
 const createOrderItems = async () => {
-    let ordersData = []
+  let ordersData = []
 
-    basketStore.orders.forEach(async (el) => {
+  basketStore.orders.forEach(async (el) => {
 
-        let name = el.product.platform + ' | ' + el.product.title
+    let name = el.product.platform + ' | ' + el.product.title
 
-        if (el.productOption.subscribe?.title) {
-            name = name + ' ' + el.productOption.subscribe.title
-        }
-        
-        if (el.productOption.plan?.title) {
-            name = name + ' ' + el.productOption.plan.title
-        }
+    if (el.productOption.subscribe?.title) {
+      name = name + ' ' + el.productOption.subscribe.title
+    }
 
-        const data = {
-            Games: {
-                game: el.product.id,
-                about: name,
-                price: el.productOption.plan.price,
-                type: el.productOption.plan.id
-            },
-            Subscriptions: {
-                subscription: el.product.id,
-                about: name,
-                price: el.productOption.plan.price
-            },
-            Donations: {
-                donation: el.product.id,
-                about: name,
-                price: el.productOption.plan.price
-            }
-        }
+    if (el.productOption.plan?.title) {
+      name = name + ' ' + el.productOption.plan.title
+    }
 
-        ordersData.push(data[el.productOption.productCollection])
+    const data = {
+      Games: {
+        game: el.product.id,
+        about: name,
+        price: el.productOption.plan.price,
+        type: el.productOption.plan.id
+      },
+      Subscriptions: {
+        subscription: el.product.id,
+        about: name,
+        price: el.productOption.plan.price
+      },
+      Donations: {
+        donation: el.product.id,
+        about: name,
+        price: el.productOption.plan.price
+      }
+    }
 
-    })
+    ordersData.push(data[el.productOption.productCollection])
 
-    return ordersData
+  })
+
+  return ordersData
 }
 
 const buttonLoader = ref(false)
 
 const createOrder = async () => {
 
-    buttonLoader.value = true
-    
-    webapp.MainButton.showProgress()
-    webapp.MainButton.disable()
+  buttonLoader.value = true
 
-    const orders = await createOrderItems()
-    const result = await client.request(createItems('order', orders))
+  webapp.MainButton.showProgress()
+  webapp.MainButton.disable()
 
-    if (!webapp.initDataUnsafe.user?.id) {
+  const orders = await createOrderItems()
+  const result = await client.request(createItems('order', orders))
 
-        const ids = result.map((el) => { return { order_id: el.id } })
+  if (!webapp.initDataUnsafe.user?.id) {
 
-        const orderGroup = await client.request(
-            createItem('orders', {
-                user: webapp.initDataUnsafe.user?.id || null,
-                products: ids,
-                email: otherData.mail,
-                help_with_creation: otherData.checkbox,
-                total_price: finalPrice._value
-            })
-        )
+    const ids = result.map((el) => {
+      return {order_id: el.id}
+    })
 
-        if (orderGroup) {
-            router.push({ name: 'ORDER', params: { id: orderGroup.id }})
-        }
+    const orderGroup = await client.request(
+        createItem('orders', {
+          user: webapp.initDataUnsafe.user?.id || null,
+          products: ids,
+          email: otherData.mail,
+          help_with_creation: otherData.checkbox,
+          total_price: finalPrice._value
+        })
+    )
 
-    } else {
-      let composition_admin = result.map((el, index) =>
-          `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽` +
-          `${(el.type && el.type === 'price_subscription') ? ' (цена по подписке)' : ''}` +
-          `${el.type && el.type === 'price_code' ? ' (Код активации)' : ''}`
-      );
-
-      let composition_user = result.map((el, index) =>
-          `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽` +
-          `${(el.type && el.type === 'price_subscription') ? ' (цена при условии наличия подписки на аккаунте)' : ''}` +
-          `${el.type && el.type === 'price_code' ? ' (Кодом активации)' : ''}`
-      );
-        let order_admin = `<b>Состав заказа:</b>${composition_admin}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
-        let order_user = `<b>Состав заказа:</b>${composition_user}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
-        let reply
-        let btn = []
-    
-        if (start_params.value.sale === 'MANUAL') {
-            reply = order_user + `\n\nСсылка на оплату формируется и будет отправлена вам в этом чате.
-            
-    // Обратите внимание: заказы исполняются ежедневно с 11:00 до 23:00 по московскому времени. `
-        }
-
-        const ids = result.map((el) => { return { order_id: el.id } })
-
-        const orderGroup = await client.request(
-            createItem('orders', {
-                user: webapp.initDataUnsafe.user?.id || null,
-                products: ids,
-                email: otherData.mail,
-                help_with_creation: otherData.checkbox,
-                total_price: finalPrice._value
-            })
-        )
-
-        if (orderGroup) {
-
-            let userId = webapp.initDataUnsafe.user?.id
-
-            if (start_params.value?.admin_chat && start_params.value.sale === 'MANUAL') {
-
-                let reply_with_admin = `<b>Новый заказ! 🔥🔥🔥</b>\n\n${order_admin}${otherData.checkbox ? '\n\n⚡️НУЖНО ПОМОЧЬ С АККАУНТОМ⚡️' : ''}\n\nПользователь: <a href='tg://user?id=${webapp.initDataUnsafe.user?.id}'>${webapp.initDataUnsafe.user?.first_name}</a> ${webapp.initDataUnsafe.user?.username ? '@' + webapp.initDataUnsafe.user.username : ''}\nID: ${webapp.initDataUnsafe.user?.id}\nПочта: ${otherData.mail}`
-                let admin_chat = start_params.value.admin_chat
-                try {
-                    await axios.post(config.BOT + '/api/send-message', {
-                        message: reply_with_admin,
-                        chatIds: [admin_chat],
-                        buttons: []
-                    })
-                } catch (ex) {
-                    console.log(ex)
-                }
-            }
-
-            if (userId) {
-                try {
-                    await axios.post(config.BOT + '/api/send-message', {
-                        message: reply,
-                        chatIds: [userId],
-                        buttons: btn
-                    })
-                } catch (ex) {
-                    console.log(ex)
-                }
-            }
-
-            window.localStorage.removeItem('basket-store')
-            basketStore.orders = []
-            webapp.close()
-        }
-
-        webapp.MainButton.hideProgress()
-        webapp.MainButton.enable()
+    if (orderGroup) {
+      router.push({name: 'ORDER', params: {id: orderGroup.id}})
     }
 
-    buttonLoader.value = false
+  } else {
+    let composition_admin = result.map((el, index) =>
+        `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽` +
+        `${(el.type && el.type === 'price_subscription') ? ' (цена по подписке)' : ''}` +
+        `${el.type && el.type === 'price_code' ? ' (Код активации)' : ''}`
+    );
+
+    let composition_user = result.map((el, index) =>
+        `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽` +
+        `${(el.type && el.type === 'price_subscription') ? ' (цена при условии наличия подписки на аккаунте)' : ''}` +
+        `${el.type && el.type === 'price_code' ? ' (Кодом активации)' : ''}`
+    );
+    let order_admin = `<b>Состав заказа:</b>${composition_admin}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
+    let order_user = `<b>Состав заказа:</b>${composition_user}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
+    let reply
+    let btn = []
+
+    if (start_params.value.sale === 'MANUAL') {
+      reply = order_user + `\n\nСсылка на оплату формируется и будет отправлена вам в этом чате.
+            
+    // Обратите внимание: заказы исполняются ежедневно с 11:00 до 23:00 по московскому времени. `
+    }
+
+    const ids = result.map((el) => {
+      return {order_id: el.id}
+    })
+
+    const orderGroup = await client.request(
+        createItem('orders', {
+          user: webapp.initDataUnsafe.user?.id || null,
+          products: ids,
+          email: otherData.mail,
+          help_with_creation: otherData.checkbox,
+          total_price: finalPrice._value
+        })
+    )
+
+    if (orderGroup) {
+
+      let userId = webapp.initDataUnsafe.user?.id
+
+      if (start_params.value?.admin_chat && start_params.value.sale === 'MANUAL') {
+
+        let reply_with_admin = `<b>Новый заказ! 🔥🔥🔥</b>\n\n${order_admin}${otherData.checkbox ? '\n\n⚡️НУЖНО ПОМОЧЬ С АККАУНТОМ⚡️' : ''}\n\nПользователь: <a href='tg://user?id=${webapp.initDataUnsafe.user?.id}'>${webapp.initDataUnsafe.user?.first_name}</a> ${webapp.initDataUnsafe.user?.username ? '@' + webapp.initDataUnsafe.user.username : ''}\nID: ${webapp.initDataUnsafe.user?.id}\nПочта: ${otherData.mail}`
+        let admin_chat = start_params.value.admin_chat
+        try {
+          await axios.post(config.BOT + '/api/send-message', {
+            message: reply_with_admin,
+            chatIds: [admin_chat],
+            buttons: []
+          })
+        } catch (ex) {
+          console.log(ex)
+        }
+      }
+
+      if (userId) {
+        try {
+          await axios.post(config.BOT + '/api/send-message', {
+            message: reply,
+            chatIds: [userId],
+            buttons: btn
+          })
+        } catch (ex) {
+          console.log(ex)
+        }
+      }
+
+      window.localStorage.removeItem('basket-store')
+      basketStore.orders = []
+      webapp.close()
+    }
+
+    webapp.MainButton.hideProgress()
+    webapp.MainButton.enable()
+  }
+
+  buttonLoader.value = false
 
 }
 
 const manualeMode = async () => {
-    await createOrder()
+  await createOrder()
 }
 
 </script>
 
 <template>
-  <main class="min-h-[100vh] pt-20 flex flex-col">
-    <div class="flex-1">
+  <main class="min-h-screen pt-20 flex flex-col">
+    <div class="flex-1 overflow-y-auto">
       <div class="flex flex-col">
-        <Header />
+        <Header/>
 
         <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
           <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
-            <Icon icon="ion:chevron-back-outline" />
+            <Icon icon="ion:chevron-back-outline"/>
             <span>Назад</span>
           </button>
         </div>
@@ -348,19 +347,22 @@ const manualeMode = async () => {
 
               <div class="relative">
                 <div class="flex flex-col py-2 gap-y-6">
-                  <hr class="border-hint_color" />
+                  <hr class="border-hint_color"/>
 
                   <div class="flex flex-col gap-y-1">
-                    <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
+                    <button @click="() => otherData.checkbox = !otherData.checkbox"
+                            class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
                       <span class="font-medium">У меня нет аккаунта</span>
                       <span class="w-8 h-8 rounded-lg bg-white shadow-sm overflow-clip">
-                        <span v-if="otherData.checkbox" class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
-                          <Icon icon="mdi:check-bold" class="text-2xl" />
+                        <span v-if="otherData.checkbox"
+                              class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
+                          <Icon icon="mdi:check-bold" class="text-2xl"/>
                         </span>
                       </span>
                     </button>
 
-                    <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
+                    <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это
+                      бесплатно.</p>
                   </div>
 
                   <div class="flex flex-col gap-y-2">
@@ -372,36 +374,39 @@ const manualeMode = async () => {
                         @blur="handleBlur"
                     />
 
-                    <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
+                    <span v-if="notValidEmail.error && notValidEmail.message"
+                          class="text-sm text-red">{{ notValidEmail.message }}</span>
                   </div>
                 </div>
 
                 <transition name="fade">
-                  <div v-if="start_params?.sale === 'OFF'" class="absolute p-4 flex justify-center items-center top-0 left-0 right-0 bottom-0 rounded-xl border-[1.5px] border-hint_color bg-[#373737] bg-opacity-[90%] backdrop-blur-sm">
+                  <div v-if="start_params?.sale === 'OFF'"
+                       class="absolute p-4 flex justify-center items-center top-0 left-0 right-0 bottom-0 rounded-xl border-[1.5px] border-hint_color bg-[#373737] bg-opacity-[90%] backdrop-blur-sm">
                     <div class="flex flex-col gap-y-4 justify-center items-center">
                       <h3 class="font-medium text-center">Проводятся технические работы</h3>
-                      <span class="text-hint_color text-sm text-center">Мы скоро вернёмся и обязательно оповестим в чате</span>
+                      <span
+                          class="text-hint_color text-sm text-center">Мы скоро вернёмся и обязательно оповестим в чате</span>
                     </div>
                   </div>
                 </transition>
               </div>
             </div>
 
-            <div v-else class="flex justify-center items-center" :style="{ height: `${screenHeight-142}px` }">
-              <span class="text-xl">Корзина пуста</span>
-            </div>
-
+            <div v-else class="flex justify-center items-center" :style="{ height: `${screenHeight-142}px` }"/>
           </div>
-        </transition>
-      </div>
-    </div>
 
-    <MainButton
-        :title="mainButtonText"
-        :color="buttonColor"
-        @submit="mainButtonClicked"
-        :buttonLoader="buttonLoader"
-    />
+
+    </transition>
+  </div>
+</div>
+
+<MainButton
+    :title=" mainButtonText
+            "
+            :color="buttonColor"
+            @submit="mainButtonClicked"
+            :buttonLoader="buttonLoader"
+            />
   </main>
-
 </template>
+
