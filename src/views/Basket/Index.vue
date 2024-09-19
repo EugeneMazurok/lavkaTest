@@ -130,10 +130,6 @@ const setMainButton = () => {
   }
 }
 
-watch(() => basketStore.orders, (newValue) => {
-    setMainButton()
-}, { deep: true })
-
 const finalPrice = computed(() => {
   return basketStore.orders.reduce((total, order) => {
     return total + (order.productOption?.plan?.price || 0)
