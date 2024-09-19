@@ -25,6 +25,7 @@ const back = () => {
   router.go(-1)
 }
 
+let buttonColor = ref('')
 const start_params = ref(null)
 
 const handleFocus = () => {
@@ -50,18 +51,19 @@ const getStartParams = async () => {
 }
 
 onActivated(() => {
-
+  setMainButton()
   window.addEventListener('resize', updateHeight)
     webapp.onEvent('backButtonClicked', back)
     webapp.BackButton.show()
 
-    setMainButton()
+
 
     webapp.onEvent('mainButtonClicked', mainButtonClicked)
 
 })
 
 onMounted(async () => {
+  setMainButton()
     await getStartParams()
     window.addEventListener('resize', updateHeight)
     loading.value = false
@@ -120,15 +122,19 @@ const mainButtonClicked = async () => {
 
 const setMainButton = () => {
   if (basketStore.orders && basketStore.orders.length > 0) {
-    if (start_params.value?.sale === 'OFF') return
-    webapp.MainButton.hide()  // Отключаем встроенную кнопку
-    mainButtonText.value = 'Оформить заказ'
+    if (start_params.value?.sale === 'OFF') return;
+    webapp.MainButton.hide();  // Отключаем встроенную кнопку
+    mainButtonText.value = 'Оформить заказ';
     const activeTab = window.localStorage.getItem('activeTab');
+    if (activeTab) {
+      buttonColor.value = JSON.parse(activeTab).color;  // Обновляем через .value
+    }
+    console.log(buttonColor.value);
   } else {
-    webapp.MainButton.hide()  // Отключаем встроенную кнопку
-    mainButtonText.value = 'Пока нечего оформлять'
+    webapp.MainButton.hide();
+    mainButtonText.value = 'Пока нечего оформлять';
   }
-}
+};
 
 const finalPrice = computed(() => {
   return basketStore.orders.reduce((total, order) => {
@@ -365,6 +371,7 @@ const manualeMode = async () => {
 
                         <MainButton
                             :title="mainButtonText"
+                            :color="buttonColor"
                             @submit="mainButtonClicked"
                             :buttonLoader="buttonLoader"
                         />
