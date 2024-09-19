@@ -235,7 +235,7 @@ const createOrder = async () => {
       let composition_admin = result.map((el, index) =>
           `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽` +
           `${(el.type && el.type === 'price_subscription') ? ' (цена по подписке)' : ''}` +
-          `${el.price_code ? ' (Код активации)' : ''}`
+          `${el.type && el.type === 'price_code' ? ' (Код активации)' : ''}`
       );
 
       let composition_user = result.map((el, index) =>
