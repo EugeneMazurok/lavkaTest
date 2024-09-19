@@ -232,8 +232,17 @@ const createOrder = async () => {
         }
 
     } else {
-        let composition_admin = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена по подписке)' : ''}`)
-        let composition_user = result.map((el, index) => `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽ ${(el.type && el.type === 'price_subscription') ? '(цена при условии наличия подписки на аккаунте)' : ''}`)
+      let composition_admin = result.map((el, index) =>
+          `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽` +
+          `${(el.type && el.type === 'price_subscription') ? ' (цена по подписке)' : ''}` +
+          `${el.price_code ? ' (Код активации)' : ''}`
+      );
+
+      let composition_user = result.map((el, index) =>
+          `\n${index + 1}. ${el.about} - ${el.price.toLocaleString('ru-RU')} ₽` +
+          `${(el.type && el.type === 'price_subscription') ? ' (цена при условии наличия подписки на аккаунте)' : ''}` +
+          `${el.price_code ? ' (Кодом активации)' : ''}`
+      );
         let order_admin = `<b>Состав заказа:</b>${composition_admin}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
         let order_user = `<b>Состав заказа:</b>${composition_user}\n\n<b>Сумма заказа:</b> ${finalPrice._value.toLocaleString('ru-RU')} ₽`
         let reply
