@@ -69,6 +69,10 @@ onActivated(() => {
 })
 
 onMounted(async () => {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS) {
+    document.querySelector('.flex-1').style.overflowY = 'scroll';
+  }
   setMainButton()
     await getStartParams()
     window.addEventListener('resize', updateHeight)
@@ -308,7 +312,7 @@ const manualeMode = async () => {
 
 <template>
   <main class="min-h-screen pt-20 flex flex-col">
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto" style="-webkit-overflow-scrolling: touch">
       <div class="flex flex-col">
         <Header />
 
