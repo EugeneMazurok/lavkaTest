@@ -55,6 +55,8 @@ const getStartParams = async () => {
 }
 
 onActivated(() => {
+
+  webapp.MainButton.hide();
   setMainButton()
   window.addEventListener('resize', updateHeight)
     webapp.onEvent('backButtonClicked', back)
@@ -125,8 +127,7 @@ const mainButtonClicked = async () => {
 }
 
 const setMainButton = () => {
-
-  webapp.MainButton.hide();  // Отключаем встроенную кнопку
+// Отключаем встроенную кнопку
   if (basketStore.orders && basketStore.orders.length > 0) {
     if (start_params.value?.sale === 'OFF') return;
     mainButtonText.value = 'Оформить заказ';
