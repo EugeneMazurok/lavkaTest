@@ -42,6 +42,10 @@ const handleBlur = () => {
   }
 };
 
+watch(() => basketStore.orders, (newValue) => {
+  setMainButton()
+}, { deep: true })
+
 const getStartParams = async () => {
     let response = await client.request(readItems('start_params', {
         fields: ['*']
@@ -121,9 +125,10 @@ const mainButtonClicked = async () => {
 }
 
 const setMainButton = () => {
+
+  webapp.MainButton.hide();  // Отключаем встроенную кнопку
   if (basketStore.orders && basketStore.orders.length > 0) {
     if (start_params.value?.sale === 'OFF') return;
-    webapp.MainButton.hide();  // Отключаем встроенную кнопку
     mainButtonText.value = 'Оформить заказ';
     const activeTab = window.localStorage.getItem('activeTab');
     if (activeTab) {
@@ -131,8 +136,9 @@ const setMainButton = () => {
     }
     console.log(buttonColor.value);
   } else {
-    webapp.MainButton.hide();
+
     mainButtonText.value = 'Пока нечего оформлять';
+    buttonColor.value = '#5A5A5A'
   }
 };
 
@@ -300,88 +306,90 @@ const manualeMode = async () => {
 </script>
 
 <template>
-    <main class="min-h-[100vh] pt-20 overflow-y-auto flex flex-col">
-        <div class="pb-4">
-            <div class="flex flex-col">
-                <Header />
+  <main class="min-h-[100vh] pt-20 overflow-y-auto flex flex-col">
+    <div class="pb-4">
+      <div class="flex flex-col">
+        <Header />
 
-                <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
-                    <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
-                        <Icon icon="ion:chevron-back-outline" />
-                        <span>Назад</span>
+        <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
+          <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
+            <Icon icon="ion:chevron-back-outline" />
+            <span>Назад</span>
+          </button>
+        </div>
+
+        <transition name="fade" appear>
+          <div class="px-4 flex flex-col gap-y-4">
+            <div v-if="basketStore.orders && basketStore.orders.length > 0" class="flex flex-col gap-y-4">
+              <div class="flex text-xl justify-between items-center font-medium">
+                <h2>Корзина</h2>
+                <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
+              </div>
+
+              <div class="flex flex-col gap-y-2" v-auto-animate v-if="start_params">
+                <Item
+                    v-for="el, index in basketStore.orders"
+                    :key="index"
+                    :product="el"
+                    :sale_prices="start_params.sale_prices"
+                />
+              </div>
+
+              <div class="relative">
+                <div class="flex flex-col py-2 gap-y-6">
+                  <hr class="border-hint_color" />
+
+                  <div class="flex flex-col gap-y-1">
+                    <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
+                      <span class="font-medium">У меня нет аккаунта</span>
+                      <span class="w-8 h-8 rounded-lg bg-white shadow-sm  overflow-clip">
+                                                <span v-if="otherData.checkbox" class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
+                                                    <Icon icon="mdi:check-bold" class="text-2xl" />
+                                                </span>
+                                            </span>
                     </button>
+
+                    <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
+                  </div>
+
+                  <div class="flex flex-col gap-y-2">
+                    <input
+                        :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
+                        v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
+                        placeholder="Введите e-mail для чека"
+                        @focus="(e) => { notValidEmail.error = false; handleFocus(e); }"
+                        @blur="handleBlur"
+                    />
+
+                    <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
+                  </div>
                 </div>
 
-                <transition name="fade" appear>
-                    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="px-4 flex flex-col gap-y-4">
-                        <div class="flex text-xl justify-between items-center font-medium">
-                            <h2>Корзина</h2>
-                            <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
-                        </div>
-
-                        <div class="flex flex-col gap-y-2" v-auto-animate v-if="start_params">
-                            <Item
-                                v-for="el, index in basketStore.orders"
-                                :key="index"
-                                :product="el"
-                                :sale_prices="start_params.sale_prices"
-                            />
-                        </div>
-
-                        <div class="relative">
-                            <div class="flex flex-col py-2 gap-y-6">
-                                <hr class="border-hint_color" />
-
-                                <div class="flex flex-col gap-y-1">
-                                    <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
-                                        <span class="font-medium">У меня нет аккаунта</span>
-                                        <span class="w-8 h-8 rounded-lg bg-white shadow-sm  overflow-clip">
-                                            <span v-if="otherData.checkbox" class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
-                                                <Icon icon="mdi:check-bold" class="text-2xl" />
-                                            </span>
-                                        </span>
-                                    </button>
-
-                                    <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
-                                </div>
-
-                                <div class="flex flex-col gap-y-2">
-                                  <input
-                                      :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
-                                      v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
-                                      placeholder="Введите e-mail для чека"
-                                      @focus="(e) => { notValidEmail.error = false; handleFocus(e); }"
-                                      @blur="handleBlur"
-                                  />
-
-                                    <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
-                                </div>
-
-                            </div>
-
-                            <transition name="fade">
-                                <div v-if="start_params?.sale === 'OFF'" class="absolute p-4 flex justify-center items-center top-0 left-0 right-0 bottom-0 rounded-xl border-[1.5px] border-hint_color bg-[#373737] bg-opacity-[90%] backdrop-blur-sm">
-                                    <div class="flex flex-col gap-y-4 justify-center items-center">
-                                        <h3 class="font-medium text-center">Проводятся технические работы</h3>
-                                        <span class="text-hint_color text-sm text-center">Мы скоро вернёмся и обязательно оповестим в чате</span>
-                                    </div>
-                                </div>
-                            </transition>
-                        </div>
-
-                        <MainButton
-                            :title="mainButtonText"
-                            :color="buttonColor"
-                            @submit="mainButtonClicked"
-                            :buttonLoader="buttonLoader"
-                        />
+                <transition name="fade">
+                  <div v-if="start_params?.sale === 'OFF'" class="absolute p-4 flex justify-center items-center top-0 left-0 right-0 bottom-0 rounded-xl border-[1.5px] border-hint_color bg-[#373737] bg-opacity-[90%] backdrop-blur-sm">
+                    <div class="flex flex-col gap-y-4 justify-center items-center">
+                      <h3 class="font-medium text-center">Проводятся технические работы</h3>
+                      <span class="text-hint_color text-sm text-center">Мы скоро вернёмся и обязательно оповестим в чате</span>
                     </div>
-
-                    <div :style="{ height: `${screenHeight-142}px` }" v-else class="flex justify-center items-center">
-                        <span class="text-xl">Корзина пуста</span>
-                    </div>
+                  </div>
                 </transition>
+              </div>
             </div>
-        </div>
-    </main>
+
+            <div v-else class="flex justify-center items-center" :style="{ height: `${screenHeight-142}px` }">
+              <span class="text-xl">Корзина пуста</span>
+            </div>
+
+            <!-- Кнопка MainButton всегда видна -->
+            <MainButton
+                :title="mainButtonText"
+                :color="buttonColor"
+                @submit="mainButtonClicked"
+                :buttonLoader="buttonLoader"
+            />
+          </div>
+        </transition>
+      </div>
+    </div>
+  </main>
 </template>
