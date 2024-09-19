@@ -386,14 +386,12 @@ const manualeMode = async () => {
       </div>
     </div>
 
-    <!-- Кнопка MainButton всегда видна -->
-    <div class="fixed bottom-0 left-0 right-0">
-      <MainButton
-          :title="mainButtonText"
-          :color="buttonColor"
-          @submit="mainButtonClicked"
-          :buttonLoader="buttonLoader"
-      />
-    </div>
+
   </main>
+  <MainButton
+      :title="mainButtonText"
+      :color="buttonColor"
+      @submit="mainButtonClicked"
+      :buttonLoader="buttonLoader"
+  />
 </template>
