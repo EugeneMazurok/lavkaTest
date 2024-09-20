@@ -30,7 +30,7 @@ let buttonColor = ref('')
 const start_params = ref(null)
 
 const handleScroll = () => {
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const scrollTop = document.documentElement.scrollTop;
   const contentHeight = document.documentElement.scrollHeight;
   const windowHeight = window.innerHeight;
 
