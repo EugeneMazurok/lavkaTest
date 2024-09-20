@@ -345,14 +345,14 @@ const manualeMode = async () => {
             <span>Назад</span>
           </button>
         </div>
-
+        <div class="fixed flex text-xl justify-between items-center font-medium bg-secondary_bg_color top-0 left-0 right-0 z-10 py-2">
+          <h2>Корзина</h2>
+          <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
+        </div>
         <transition name="fade" appear>
           <div class="px-4 flex flex-col gap-y-4">
             <div v-if="basketStore.orders && basketStore.orders.length > 0" class="flex flex-col gap-y-4">
-              <div class="fixed flex text-xl justify-between items-center font-medium bg-secondary_bg_color top-0 left-0 right-0 z-10 py-2">
-                <h2>Корзина</h2>
-                <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
-              </div>
+
 
               <div class="flex flex-col gap-y-2" v-auto-animate v-if="start_params">
                 <Item
