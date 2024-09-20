@@ -15,8 +15,8 @@ const emit = defineEmits(['submit'])
 </script>
 
 <template>
-  <div :class="[isFixed ? 'fixed bottom-0 left-0 right-0' : 'static', 'justify-center flex']">
-    <div class="min-512:w-[512px] w-full min-512:rounded-t-xl p-4 bg-secondary_bg_color flex justify-center items-center">
+  <div :class="[isFixed ? 'fixed bottom-0 left-0 right-0' : 'static', 'justify-center flex']" >
+    <div class="min-512:w-[512px] w-full min-512:rounded-t-xl p-4 flex justify-center items-center">
       <button
           :disable="buttonLoader"
           :style="{ backgroundColor: color }"
