@@ -13,6 +13,7 @@ import axios from 'axios'
 import MainButton from '../../components/Product/MainButton.vue'
 
 const client = createDirectus(config.DIRECTUS.API).with(rest())
+const isButtonFixed = ref(false);
 const basketStore = useBasketStore()
 
 const router = useRouter()
@@ -27,6 +28,15 @@ const back = () => {
 
 let buttonColor = ref('')
 const start_params = ref(null)
+
+const handleScroll = () => {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const contentHeight = document.documentElement.scrollHeight;
+  const windowHeight = window.innerHeight;
+
+  // Если контент превышает высоту окна и скролл достиг конца страницы — фиксируем кнопку
+  isButtonFixed.value = (scrollTop + windowHeight) < contentHeight;
+};
 
 const handleFocus = () => {
   const mainElement = document.querySelector('body');
@@ -70,12 +80,14 @@ onActivated(() => {
 onMounted(async () => {
 
   setMainButton()
+  window.addEventListener('scroll', handleScroll);
   await getStartParams()
   window.addEventListener('resize', updateHeight)
   loading.value = false
 })
 
 onDeactivated(() => {
+  window.removeEventListener('scroll', handleScroll);
   handleBlur()
   webapp.offEvent('backButtonClicked', back)
   webapp.BackButton.hide()
@@ -392,12 +404,12 @@ const manualeMode = async () => {
       </div>
     </div>
 
-    <!-- MainButton всегда фиксирован снизу -->
     <MainButton
         :title="mainButtonText"
         :color="buttonColor"
         @submit="mainButtonClicked"
         :buttonLoader="buttonLoader"
+        :isFixed="isButtonFixed"
     />
   </main>
 </template>
