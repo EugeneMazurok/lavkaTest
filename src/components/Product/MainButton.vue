@@ -15,7 +15,7 @@ const emit = defineEmits(['submit'])
 </script>
 
 <template>
-  <span class="flex h-20" />
+  <span :class="isFixed ? ['flex h-20'] : ''" />
   <div :class="['justify-center flex', isFixed ? 'fixed bottom-0 left-0 right-0 bg-secondary_bg_color' : 'static']">
     <div class="min-512:w-[512px] w-full min-512:rounded-t-xl p-4 flex justify-center items-center">
       <button
