@@ -34,8 +34,9 @@ const handleScroll = () => {
   const contentHeight = document.documentElement.scrollHeight;
   const windowHeight = window.innerHeight;
 
-  // Если контент превышает высоту окна и скролл достиг конца страницы — фиксируем кнопку
   isButtonFixed.value = (scrollTop + windowHeight) < contentHeight;
+
+  console.log('Scroll Top:', scrollTop, 'Window Height:', windowHeight, 'Content Height:', contentHeight, 'Is Fixed:', isButtonFixed.value);
 };
 
 const handleFocus = () => {
@@ -324,7 +325,7 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="min-h-screen flex flex-col">
+  <main class="min-h-screen flex flex-col" style="touch-action: pan-y; -ms-touch-action: pan-y;">
     <div class="flex-1 overflow-y-auto" style="touch-action: pan-y; -ms-touch-action: pan-y;">
       <div class="flex flex-col">
         <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
