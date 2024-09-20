@@ -21,6 +21,7 @@ const route = useRoute()
 const webapp = window.Telegram.WebApp
 
 const loading = ref(true)
+let checkBasket = null
 
 const back = () => {
   router.go(-1)
@@ -29,15 +30,15 @@ const back = () => {
 let buttonColor = ref('')
 const start_params = ref(null)
 
-const handleScroll = () => {
-  const scrollTop = document.documentElement.scrollTop;
-  const contentHeight = document.documentElement.scrollHeight;
-  const windowHeight = window.innerHeight;
-
-  isButtonFixed.value = (scrollTop + windowHeight) < contentHeight;
-
-  console.log('Scroll Top:', scrollTop, 'Window Height:', windowHeight, 'Content Height:', contentHeight, 'Is Fixed:', isButtonFixed.value);
-};
+const updateButtonFixedState = () => {
+  if (basketStore.orders.length >= 6) {
+    isButtonFixed.value = true;
+    console.log("ABPBA")
+  } else {
+    console.log("FALSE")
+    isButtonFixed.value = false;
+  }
+}
 
 const handleFocus = () => {
   const mainElement = document.querySelector('body');
@@ -66,7 +67,9 @@ const getStartParams = async () => {
 }
 
 onActivated(() => {
-
+checkBasket = watch(() => basketStore.orders.length, () => {
+  updateButtonFixedState(); // Обновляем при изменении количества товаров
+});
   webapp.MainButton.hide();
   setMainButton()
   window.addEventListener('resize', updateHeight)
@@ -79,16 +82,17 @@ onActivated(() => {
 })
 
 onMounted(async () => {
-
+checkBasket = watch(() => basketStore.orders.length, () => {
+  updateButtonFixedState(); // Обновляем при изменении количества товаров
+});
   setMainButton()
-  window.addEventListener('scroll', handleScroll);
   await getStartParams()
   window.addEventListener('resize', updateHeight)
   loading.value = false
 })
 
 onDeactivated(() => {
-  window.removeEventListener('scroll', handleScroll);
+  checkBasket = null
   handleBlur()
   webapp.offEvent('backButtonClicked', back)
   webapp.BackButton.hide()
@@ -143,6 +147,13 @@ const setMainButton = () => {
     const activeTab = window.localStorage.getItem('activeTab');
     if (activeTab) {
       buttonColor.value = JSON.parse(activeTab).color;  // Обновляем через .value
+    }
+    if (basketStore.orders.length >= 6) {
+      isButtonFixed.value = true;
+      console.log("ABPBA")
+    } else {
+      console.log("FALSE")
+      isButtonFixed.value = false;
     }
     console.log(buttonColor.value);
   } else {
