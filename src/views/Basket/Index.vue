@@ -40,13 +40,6 @@ const updateButtonFixedState = () => {
   }
 }
 
-const handleFocus = () => {
-  const mainElement = document.querySelector('body');
-  if (mainElement) {
-    mainElement.classList.add('pb-80'); // Добавьте нужный отступ
-  }
-};
-
 const handleBlur = () => {
   const mainElement = document.querySelector('body');
   if (mainElement) {
@@ -389,7 +382,7 @@ const manualeMode = async () => {
                         :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
                         v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
                         placeholder="Введите e-mail для чека"
-                        @focus="(e) => { notValidEmail.error = false; handleFocus(e); }"
+                        @focus="(e) => { notValidEmail.error = false; }"
                         @blur="handleBlur"
                     />
 
