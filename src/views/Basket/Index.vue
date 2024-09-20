@@ -43,7 +43,14 @@ const updateButtonFixedState = () => {
 const handleBlur = () => {
   const mainElement = document.querySelector('body');
   if (mainElement) {
-    mainElement.classList.remove('pb-80');
+    mainElement.classList.remove('pb-80'); // Убираем дополнительный отступ
+  }
+};
+
+const handleFocus = () => {
+  const mainElement = document.querySelector('body');
+  if (mainElement) {
+    mainElement.classList.add('pb-80'); // Добавляем дополнительный отступ при фокусе
   }
 };
 
@@ -380,9 +387,9 @@ const manualeMode = async () => {
                   <div class="flex flex-col gap-y-2">
                     <input
                         :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
-                        v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="email"
+                        v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="search"
                         placeholder="Введите e-mail для чека"
-                        @focus="(e) => { notValidEmail.error = false; }"
+                        @focus="(e) => { notValidEmail.error = false; handleFocus}"
                         @blur="handleBlur"
                     />
 
