@@ -325,7 +325,7 @@ const manualeMode = async () => {
 
 <template>
   <main class="min-h-screen flex flex-col">
-    <div class="flex-1 overflow-y-auto pb-24"> <!-- Добавляем отступ снизу для кнопки -->
+    <div class="flex-1 overflow-y-auto">
       <div class="flex flex-col">
         <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
           <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
@@ -382,8 +382,18 @@ const manualeMode = async () => {
 
                     <span v-if="notValidEmail.error && notValidEmail.message"
                           class="text-sm text-red">{{ notValidEmail.message }}</span>
+                    <MainButton
+                        :title="mainButtonText"
+                        :color="buttonColor"
+                        @submit="mainButtonClicked"
+                        :buttonLoader="buttonLoader"
+                        :isFixed="isButtonFixed"
+                    />
                   </div>
+
+
                 </div>
+
 
                 <transition name="fade">
                   <div v-if="start_params?.sale === 'OFF'"
@@ -403,13 +413,5 @@ const manualeMode = async () => {
         </transition>
       </div>
     </div>
-
-    <MainButton
-        :title="mainButtonText"
-        :color="buttonColor"
-        @submit="mainButtonClicked"
-        :buttonLoader="buttonLoader"
-        :isFixed="isButtonFixed"
-    />
   </main>
 </template>

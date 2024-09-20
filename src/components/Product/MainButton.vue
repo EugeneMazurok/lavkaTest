@@ -8,15 +8,13 @@ defineProps({
     type: String,
     default: '#5AAD5D'
   },
-  isFixed: Boolean, // Новый пропс
+  isFixed: Boolean,
 })
 
 const emit = defineEmits(['submit'])
 </script>
 
 <template>
-  <!-- Spacer to ensure content scrolls without overlapping the button -->
-  <span class="flex h-20" />
   <div :class="[isFixed ? 'fixed bottom-0 left-0 right-0' : 'static', 'justify-center flex']">
     <div class="min-512:w-[512px] w-full min-512:rounded-t-xl p-4 bg-secondary_bg_color flex justify-center items-center">
       <button
