@@ -166,10 +166,6 @@ const createOrderItems = async () => {
       name = name + ' ' + el.productOption.subscribe.title
     }
 
-    if (el.productOption.plan?.title) {
-      name = name + ' ' + el.productOption.plan.title
-    }
-
     const data = {
       Games: {
         game: el.product.id,
@@ -316,11 +312,9 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="min-h-screen pt-20 flex flex-col">
-    <div class="flex-1 overflow-y-auto">
+  <main class="min-h-screen flex flex-col">
+    <div class="flex-1 overflow-y-auto pb-24"> <!-- Добавляем отступ снизу для кнопки -->
       <div class="flex flex-col">
-        <Header/>
-
         <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
           <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
             <Icon icon="ion:chevron-back-outline"/>
@@ -394,19 +388,16 @@ const manualeMode = async () => {
 
             <div v-else class="flex justify-center items-center" :style="{ height: `${screenHeight-142}px` }"/>
           </div>
+        </transition>
+      </div>
+    </div>
 
-
-    </transition>
-  </div>
-</div>
-
-<MainButton
-    :title=" mainButtonText
-            "
-            :color="buttonColor"
-            @submit="mainButtonClicked"
-            :buttonLoader="buttonLoader"
-            />
+    <!-- MainButton всегда фиксирован снизу -->
+    <MainButton
+        :title="mainButtonText"
+        :color="buttonColor"
+        @submit="mainButtonClicked"
+        :buttonLoader="buttonLoader"
+    />
   </main>
 </template>
-

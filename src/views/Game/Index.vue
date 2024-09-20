@@ -106,16 +106,16 @@ const getProduct = async (id) => {
 
   if (product.value.price_sale && sale_prices.value) {
     activeTab.subscribe = false
-    activeTab.plan = {id: 'price_sale', price: product.value.price_sale}
+    activeTab.plan = {id: 'price_sale', price: product.value.price_sale,  title: "На аккаунт"}
   } else if (product.value.price_code) { // Новое условие для price_code
     activeTab.subscribe = false
-    activeTab.plan = {id: 'price_code', price: product.value.price_code}
+    activeTab.plan = {id: 'price_code', price: product.value.price_code, title: "Код активации"}
   } else if (product.value.price_standart) {
     activeTab.subscribe = false
     activeTab.plan = {id: 'price_standart', price: product.value.price_standart}
   } else {
     activeTab.subscribe = true
-    activeTab.plan = {id: 'price_subscription', price: product.value.price_subscription}
+    activeTab.plan = {id: 'price_subscription', price: product.value.price_subscription,  title: "На аккаунт"}
   }
 
   webapp.MainButton.color = product.value?.platform === 'Xbox' ? '#5AAD5D' : '#2E60E7'
@@ -232,58 +232,54 @@ const share = () => {
 
         <div class="flex flex-col gap-y-2">
           <div class="carousel carousel-center w-full px-4 space-x-2">
-            <!-- Вкладка для price_sale -->
             <Tab
                 v-if="product.price_sale && sale_prices"
                 :title="product.platform === 'PS' ? 'На аккаунт Турция' : 'На аккаунт'"
                 :tab="{ price: product.price_sale }"
                 :active="activeTab.plan?.id === 'price_sale'"
                 @change="() => {
-            activeTab.plan = { id: 'price_sale', price: product.price_sale }
+            activeTab.plan = { id: 'price_sale', price: product.price_sale,  title: 'На аккаунт' }
             activeTab.subscribe = false
         }"
                 :platform="product.platform"
             />
 
             <Tab
-                v-if="product.price_standart"
+                v-if="!product.price_sale && product.price_standart"
                 :title="product.platform === 'PS' ? 'На аккаунт Турция' : 'На аккаунт'"
                 :tab="{ price: product.price_standart }"
                 :active="activeTab.plan?.id === 'price_standart'"
                 @change="() => {
-        activeTab.plan = { id: 'price_standart', price: product.price_standart }
+        activeTab.plan = { id: 'price_standart', price: product.price_standart,  title: 'На аккаунт' }
         activeTab.subscribe = false
     }"
                 :platform="product.platform"
             />
 
-            <!-- Вкладка для price_subscription -->
             <Tab
                 v-if="product.price_subscription && sale_prices"
                 :title="product.platform === 'PS' ? 'На аккаунт Турция с PS Plus' : 'На аккаунт с Game Pass'"
                 :tab="{ price: product.price_subscription }"
                 :active="activeTab.plan?.id === 'price_subscription'"
                 @change="() => {
-            activeTab.plan = { id: 'price_subscription', price: product.price_subscription }
+            activeTab.plan = { id: 'price_subscription', price: product.price_subscription,  title: 'На аккаунт' }
             activeTab.subscribe = true
         }"
                 :platform="product.platform"
             />
 
-            <!-- Вкладка для price_code -->
             <Tab
                 v-if="product.price_code"
                 :title="'Код активации'"
                 :tab="{ price: product.price_code }"
                 :active="activeTab.plan?.id === 'price_code'"
                 @change="() => {
-            activeTab.plan = { id: 'price_code', price: product.price_code }
+            activeTab.plan = { id: 'price_code', price: product.price_code,  title: 'Код активации' }
             activeTab.subscribe = false
         }"
                 :platform="product.platform"
             />
 
-            <!-- Вкладка для price_standart -->
 
           </div>
 

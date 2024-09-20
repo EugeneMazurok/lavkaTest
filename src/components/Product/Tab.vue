@@ -17,7 +17,7 @@ defineProps({
 
       <!-- Динамический класс для заголовка -->
       <span v-if="title"
-            :class="[active ? (platform === 'Xbox' ? 'text-[#35A153]' : 'text-[#2E60E7]') : 'text-hint_color']"
+            :class="[active ? (platform === 'Xbox' ? 'text-[#6EFB95]' : 'text-[#4F7DF9]') : 'text-hint_color']"
             class="text-xs">{{ title }}</span>
 
       <span class="flex gap-x-1 items-end">

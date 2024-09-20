@@ -103,10 +103,13 @@ onMounted(async () => {
                 <span class="line-clamp-1">
                     {{ product.product.title }}
                     {{ product.productOption.subscribe?.title && product.productOption.subscribe.title }}
-                    {{ product.productOption.plan?.title && product.productOption.plan.title }}
+
                 </span>
 
-                <span class="text-sm text-hint_color line-clamp-1">{{ product.product.compatible_platforms }}</span>
+                <span class="text-sm text-hint_color line-clamp-1">
+                    {{ product.product.compatible_platforms }}
+                        ({{ product.productOption.plan?.title && product.productOption.plan.title }})
+                  </span>
             </div>
         </div>
 
