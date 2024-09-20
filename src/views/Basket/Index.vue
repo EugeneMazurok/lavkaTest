@@ -12,6 +12,7 @@ import isValidEmail from '../../utils/isValidEmail'
 import axios from 'axios'
 import MainButton from '../../components/Product/MainButton.vue'
 
+let checkBasket = null
 const client = createDirectus(config.DIRECTUS.API).with(rest())
 const isButtonFixed = ref(false);
 const basketStore = useBasketStore()
@@ -21,7 +22,7 @@ const route = useRoute()
 const webapp = window.Telegram.WebApp
 
 const loading = ref(true)
-let checkBasket = null
+const emailInputRef = ref<HTMLInputElement | null>null;
 
 const back = () => {
   router.go(-1)
@@ -120,9 +121,17 @@ const mainButtonClicked = async () => {
     notValidEmail.error = true
     notValidEmail.message = 'Обязательное поле'
     webapp.HapticFeedback.notificationOccurred('error')
+    const emailInput = document.getElementById('email-input')
+    if (emailInput) {
+      emailInput.scrollIntoView({ behavior: 'smooth' })
+    }
     return
 
   } else if (!isValidEmail(otherData.mail)) {
+    const emailInput = document.getElementById('email-input')
+    if (emailInput) {
+      emailInput.scrollIntoView({ behavior: 'smooth' })
+    }
     notValidEmail.error = true
     notValidEmail.message = 'Некорректно введён e-mail'
     webapp.HapticFeedback.notificationOccurred('error')
@@ -386,12 +395,15 @@ const manualeMode = async () => {
 
                   <div class="flex flex-col gap-y-2">
                     <input
+                        id="email-input"
+                        :ref="emailInputRef"
                         :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
-                        v-model="otherData.mail" @keyup.enter="handleBlur" type="text"
+
+                        @blur="handleBlur"
+                        v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="text"
                         enterkeyhint="done"
                         placeholder="Введите e-mail для чека"
                         @focus="(e) => { notValidEmail.error = false; handleFocus}"
-                        @blur="handleBlur"
                     />
 
                     <span v-if="notValidEmail.error && notValidEmail.message"
