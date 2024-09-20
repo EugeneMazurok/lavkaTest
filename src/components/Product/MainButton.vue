@@ -21,7 +21,7 @@ const emit = defineEmits(['submit'])
       <button
           :disable="buttonLoader"
           :style="{ backgroundColor: color }"
-          class="w-full px-2 h-12 flex justify-center items-center rounded-xl shadow-sm font-medium active:opacity-75"
+          :class="[isFixed ? 'p-4' : '', 'w-full px-2 h-12 flex justify-center items-center rounded-xl shadow-sm font-medium active:opacity-75']"
           @click="emit('submit')"
       >
         <Icon v-if="buttonLoader" icon="line-md:loading-loop" class="text-lg" />
