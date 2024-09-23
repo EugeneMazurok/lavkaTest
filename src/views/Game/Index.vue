@@ -55,7 +55,6 @@ onActivated(() => {
   if (product.value) {
     checkBasket()
     webapp.MainButton.color = product.value?.platform === 'Xbox' ? '#5AAD5D' : '#2E60E7'
-    webapp.MainButton.show()
   }
 })
 
@@ -120,7 +119,6 @@ const getProduct = async (id) => {
 
   webapp.MainButton.color = product.value?.platform === 'Xbox' ? '#5AAD5D' : '#2E60E7'
   checkBasket()
-  webapp.MainButton.show()
 
   loading.value = false
 }
@@ -161,8 +159,6 @@ const checkBasket = (newValue) => {
     if (productInBasket.productOption?.plan && newValue) {
 
       const findOption = basketStore.orders.find((el) => (el.product.id === product.value.id && el.productOption.plan.id === newValue.id && el.productOption.productCollection === activeTab.productCollection))
-      console.log("PEDIKI")
-      console.log(findOption)
       if (findOption === undefined) {
         mainButtonText.value = 'Добавить в корзину'
       } else {
@@ -322,7 +318,6 @@ const share = () => {
         </div>
 
         <MainButton
-            v-if="!webapp.initDataUnsafe?.user"
             :title="mainButtonText"
             @submit="mainButtonClicked"
         />
