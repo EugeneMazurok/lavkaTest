@@ -189,9 +189,9 @@ const share = () => {
 </script>
 
 <template>
-  <div class="overflow-y-auto h-screen min-h-screen flex flex-col">
-    <Header/>
   <main class="pt-20 flex flex-col overflow-y-auto">
+    <Header/>
+
 
 
     <transition name="fade" appear>
@@ -339,5 +339,4 @@ const share = () => {
         @submit="mainButtonClicked"
         :color="buttonColor"
     />
-  </div>
 </template>
