@@ -78,6 +78,7 @@ onDeactivated(() => {
 })
 
 onMounted(async () => {
+  webapp.disableVerticalSwipes();
   await getProduct(route.params.id)
 })
 
