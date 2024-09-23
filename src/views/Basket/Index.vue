@@ -44,14 +44,14 @@ const updateButtonFixedState = () => {
 const handleBlur = () => {
   const mainElement = document.querySelector('body');
   if (mainElement) {
-    mainElement.classList.remove('pb-80'); // Убираем дополнительный отступ
+    mainElement.classList.remove('pb-100'); // Убираем дополнительный отступ
   }
 };
 
 const handleFocus = () => {
   const mainElement = document.querySelector('body');
   if (mainElement) {
-    mainElement.classList.add('pb-80'); // Добавляем дополнительный отступ при фокусе
+    mainElement.classList.add('pb-100'); // Добавляем дополнительный отступ при фокусе
   }
 };
 

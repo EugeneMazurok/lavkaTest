@@ -30,6 +30,7 @@ const loading = ref(true)
 
 let activeTabWatch = null;
 let basketStoreWatch = null;
+let buttonColor = ref('')
 
 const back = () => {
   if (window.history.length > 1) {
@@ -117,7 +118,9 @@ const getProduct = async (id) => {
     activeTab.plan = {id: 'price_subscription', price: product.value.price_subscription,  title: "На аккаунт"}
   }
 
-  webapp.MainButton.color = product.value?.platform === 'Xbox' ? '#5AAD5D' : '#2E60E7'
+
+  buttonColor.value = JSON.parse(window.localStorage.getItem('activeTab')).color;  // Обновляем через .value
+
   checkBasket()
 
   loading.value = false
@@ -185,7 +188,7 @@ const share = () => {
 </script>
 
 <template>
-  <main class="h-screen overflow-y-auto pt-20 flex flex-col">
+  <main class="h-screen min-h-[100vh] overflow-y-auto pt-20 flex flex-col">
     <Header/>
 
     <transition name="fade" appear>
@@ -319,9 +322,10 @@ const share = () => {
         </div>
 
         <MainButton
-            :is-fixed="product.price_subscription"
+            :is-fixed="true"
             :title="mainButtonText"
             @submit="mainButtonClicked"
+            :color="buttonColor"
         />
 
       </div>
