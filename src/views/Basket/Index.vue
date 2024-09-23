@@ -44,18 +44,13 @@ const updateButtonFixedState = () => {
 const handleBlur = () => {
   const mainElement = document.querySelector('body');
 
-    mainElement.classList.remove('pb-120'); // Убираем дополнительный отступ
 
-
-    emailInputRef.blur(); // Убираем фокус с активного элемента (закрывает клавиатуру)
+    emailInputRef.value.blur(); // Убираем фокус с активного элемента (закрывает клавиатуру)
 
 };
 
 const handleFocus = () => {
   const mainElement = document.querySelector('body');
-
-    mainElement.classList.add('pb-120'); // Добавляем дополнительный отступ при фокусе
-
 
     emailInputRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -77,7 +72,7 @@ const handleDocumentClick = (event) => {
   const target = event.target;
   if (emailInputRef.value && !emailInputRef.value.contains(target)) {
     console.log("fdsfds")
-    emailInputRef.value.blur();
+    emailInputRef.blur();
   }
 };
 
