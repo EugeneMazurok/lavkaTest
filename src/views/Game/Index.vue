@@ -188,9 +188,9 @@ const share = () => {
 </script>
 
 <template>
-  <div>
+  <div class="overflow-hidden">
     <Header/>
-  <main class="h-screen min-h-[100vh] pt-20 flex flex-col" style="-webkit-overflow-scrolling: touch">
+  <main class=" min-h-[100vh] pt-20 flex flex-col overflow-hidden">
 
 
     <transition name="fade" appear>
