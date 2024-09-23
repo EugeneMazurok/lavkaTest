@@ -190,7 +190,7 @@ const share = () => {
 
 <template>
 
-  <main class=" min-h-[100vh] pt-20 flex flex-col overflow-y-auto h-screen">
+  <main class="min-h-screen h-screen pt-20 flex flex-col overflow-y-auto">
     <Header/>
 
     <transition name="fade" appear>
