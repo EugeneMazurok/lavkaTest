@@ -47,7 +47,10 @@ const handleBlur = () => {
 };
 
 const handleFocus = () => {
-    emailInputRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const emailInput = document.getElementById('email-input')
+  if (emailInput) {
+    emailInput.scrollIntoView({ behavior: 'smooth' })
+  }
 
 };
 
