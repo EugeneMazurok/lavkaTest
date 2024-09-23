@@ -190,6 +190,8 @@ const share = () => {
 
 <template>
   <main class="pt-20 min-h-screen h-screen flex flex-col overflow-y-auto">
+    <div class="flex-1">
+      <div class="flex flex-col">
     <Header/>
 
     <transition name="fade" appear>
@@ -335,6 +337,8 @@ const share = () => {
         @submit="mainButtonClicked"
         :color="buttonColor"
     />
+      </div>
+    </div>
   </main>
 
 </template>
