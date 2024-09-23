@@ -190,7 +190,7 @@ const share = () => {
 
 <template>
   <main class="pt-20 min-h-screen h-screen flex flex-col">
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto overscroll-contain">
       <div class="flex flex-col">
     <Header/>
 
