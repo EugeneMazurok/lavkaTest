@@ -189,8 +189,8 @@ const share = () => {
 </script>
 
 <template>
-  <main class="pt-20 min-h-screen h-screen flex flex-col overflow-y-auto">
-    <div class="flex-1">
+  <main class="pt-20 min-h-screen h-screen flex flex-col overflow-y-hidden">
+    <div class="flex-1 overflow-y-auto">
       <div class="flex flex-col">
     <Header/>
 
