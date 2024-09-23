@@ -69,14 +69,14 @@ const getStartParams = async () => {
 
 const handleDocumentClick = (event) => {
   const target = event.target;
-
-  if (emailInputRef.value && !emailInputRef.value.contains(target) && target.tagName !== 'INPUT') {
+  if (emailInputRef.value && !emailInputRef.value.contains(target)) {
+    console.log("fdsfds")
     emailInputRef.value.blur();
   }
 };
 
 onActivated(() => {
-  document.addEventListener('click', handleDocumentClick);
+  document.addEventListener('touchstart', handleDocumentClick);
 checkBasket = watch(() => basketStore.orders.length, () => {
   updateButtonFixedState(); // Обновляем при изменении количества товаров
 });
@@ -92,7 +92,7 @@ checkBasket = watch(() => basketStore.orders.length, () => {
 })
 
 onMounted(async () => {
-  document.addEventListener('click', handleDocumentClick);
+  document.addEventListener('touchstart', handleDocumentClick);
 checkBasket = watch(() => basketStore.orders.length, () => {
   updateButtonFixedState(); // Обновляем при изменении количества товаров
 });
@@ -113,7 +113,7 @@ onDeactivated(() => {
   webapp.MainButton.enable()
 
   window.removeEventListener('resize', updateHeight)
-  window.removeEventListener('click', handleDocumentClick)
+  window.removeEventListener('touchstart', handleDocumentClick)
 })
 
 const screenHeight = ref(window.innerHeight)
