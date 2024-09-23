@@ -46,12 +46,22 @@ const handleBlur = () => {
   if (mainElement) {
     mainElement.classList.remove('pb-120'); // Убираем дополнительный отступ
   }
+
+  // Закрываем клавиатуру
+  if (document.activeElement) {
+    document.activeElement.blur(); // Убираем фокус с активного элемента (закрывает клавиатуру)
+  }
 };
 
 const handleFocus = () => {
   const mainElement = document.querySelector('body');
   if (mainElement) {
     mainElement.classList.add('pb-120'); // Добавляем дополнительный отступ при фокусе
+  }
+
+  if (emailInputRef.value) {
+    // Прокручиваем страницу к инпуту
+    emailInputRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 };
 
