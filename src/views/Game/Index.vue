@@ -112,7 +112,7 @@ const getProduct = async (id) => {
     activeTab.plan = {id: 'price_code', price: product.value.price_code, title: "Код активации"}
   } else if (product.value.price_standart) {
     activeTab.subscribe = false
-    activeTab.plan = {id: 'price_standart', price: product.value.price_standart}
+    activeTab.plan = {id: 'price_standart', price: product.value.price_standart, title: "На аккаунт"}
   } else {
     activeTab.subscribe = true
     activeTab.plan = {id: 'price_subscription', price: product.value.price_subscription,  title: "На аккаунт"}
