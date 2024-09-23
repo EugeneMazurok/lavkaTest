@@ -42,16 +42,11 @@ const updateButtonFixedState = () => {
 }
 
 const handleBlur = () => {
-  const mainElement = document.querySelector('body');
-
-
-    emailInputRef.value.blur(); // Убираем фокус с активного элемента (закрывает клавиатуру)
+    emailInputRef.blur(); // Убираем фокус с активного элемента (закрывает клавиатуру)
 
 };
 
 const handleFocus = () => {
-  const mainElement = document.querySelector('body');
-
     emailInputRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
 };
