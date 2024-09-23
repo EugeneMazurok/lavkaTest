@@ -18,7 +18,7 @@ defineProps({
       <!-- Динамический класс для заголовка -->
       <span v-if="title"
             :class="[active ? (platform === 'Xbox' ? 'text-[#6EFB95]' : 'text-[#4F7DF9]') : 'text-hint_color']"
-            class="text-xs">{{ title }}</span>
+            class="text-xs" style="white-space: pre-wrap">{{ title }}</span>
 
       <span class="flex gap-x-1 items-end">
                 <span class="text-2xl font-semibold">{{ tab.price.toLocaleString('ru-RU') }}</span>

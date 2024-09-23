@@ -190,7 +190,7 @@ const share = () => {
 
     <transition name="fade" appear>
 
-      <div v-if="!loading" class="flex flex-col gap-y-4 pb-4">
+      <div v-if="!loading" class="flex flex-col gap-y-4">
 
         <div v-if="!webapp.initDataUnsafe.user" class="px-4">
           <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
@@ -254,7 +254,8 @@ const share = () => {
 
             <Tab
                 v-if="product.price_subscription && sale_prices"
-                :title="product.platform === 'PS' ? 'На аккаунт Турция с PS Plus' : 'На аккаунт с Game Pass'"
+                :title="product.platform === 'PS' ? 'На аккаунт Турция с PS Plus' : 'На аккаунт\n' +
+                 'с Game Pass'"
                 :tab="{ price: product.price_subscription }"
                 :active="activeTab.plan?.id === 'price_subscription'"
                 @change="() => {
@@ -318,6 +319,7 @@ const share = () => {
         </div>
 
         <MainButton
+            :is-fixed="product.price_subscription"
             :title="mainButtonText"
             @submit="mainButtonClicked"
         />
