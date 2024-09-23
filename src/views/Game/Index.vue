@@ -41,6 +41,7 @@ const back = () => {
 }
 
 onActivated(() => {
+  webapp.disableVerticalSwipes()
   webapp.onEvent('backButtonClicked', back)
   webapp.BackButton.show()
 
@@ -78,7 +79,7 @@ onDeactivated(() => {
 })
 
 onMounted(async () => {
-
+webapp.disableVerticalSwipes()
   await getProduct(route.params.id)
 })
 
