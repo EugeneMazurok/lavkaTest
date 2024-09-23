@@ -1,5 +1,5 @@
 <template>
-  <main v-if="!loading && !exit" class="flex justify-center">
+  <main v-if="!loading && !exit" class="flex justify-center overflow-hidden" style="-webkit-overflow-scrolling: touch">
     <div class="w-full max-w-lg">
       <router-view v-slot="{ Component }">
         <keep-alive>
