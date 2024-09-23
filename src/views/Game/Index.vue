@@ -189,14 +189,14 @@ const share = () => {
 </script>
 
 <template>
-  <main class="pt-20 min-h-screen h-screen">
-    <div class="flex-1 ">
+  <main class="pt-20 min-h-screen h-screen flex flex-col">
+    <div class="flex-1 overflow-y-auto">
       <div class="flex flex-col">
     <Header/>
 
     <transition name="fade" appear>
 
-      <div v-if="!loading" class="flex flex-col gap-y-4 overflow-y-auto">
+      <div v-if="!loading" class="flex flex-col gap-y-4">
 
         <div v-if="!webapp.initDataUnsafe.user" class="px-4">
           <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
@@ -331,15 +331,15 @@ const share = () => {
       <Loader v-else/>
 
     </transition>
-
+        <MainButton
+            :is-fixed="true"
+            :title="mainButtonText"
+            @submit="mainButtonClicked"
+            :color="buttonColor"
+        />
       </div>
     </div>
-    <MainButton
-        :is-fixed="true"
-        :title="mainButtonText"
-        @submit="mainButtonClicked"
-        :color="buttonColor"
-    />
+
   </main>
 
 </template>
