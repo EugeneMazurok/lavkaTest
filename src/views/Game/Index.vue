@@ -78,7 +78,7 @@ onDeactivated(() => {
 })
 
 onMounted(async () => {
-  webapp.disableVerticalSwipes();
+
   await getProduct(route.params.id)
 })
 
@@ -189,9 +189,10 @@ const share = () => {
 </script>
 
 <template>
-
-  <main class="min-h-screen h-screen pt-20 flex flex-col overflow-y-auto">
+  <div class="overflow-hidden">
     <Header/>
+  <main class=" min-h-[100vh] pt-20 flex flex-col overflow-hidden">
+
 
     <transition name="fade" appear>
 
@@ -330,12 +331,13 @@ const share = () => {
       <Loader v-else/>
 
     </transition>
+
+  </main>
     <MainButton
         :is-fixed="true"
         :title="mainButtonText"
         @submit="mainButtonClicked"
         :color="buttonColor"
     />
-  </main>
-
+  </div>
 </template>
