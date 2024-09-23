@@ -188,8 +188,10 @@ const share = () => {
 </script>
 
 <template>
-  <main class="h-screen min-h-[100vh] pt-20 flex flex-col" style="-webkit-overflow-scrolling: touch">
+  <div>
     <Header/>
+  <main class="h-screen min-h-[100vh] pt-20 flex flex-col" style="-webkit-overflow-scrolling: touch">
+
 
     <transition name="fade" appear>
 
@@ -321,12 +323,7 @@ const share = () => {
           </div>
         </div>
 
-        <MainButton
-            :is-fixed="true"
-            :title="mainButtonText"
-            @submit="mainButtonClicked"
-            :color="buttonColor"
-        />
+
 
       </div>
 
@@ -335,4 +332,11 @@ const share = () => {
     </transition>
 
   </main>
+    <MainButton
+        :is-fixed="true"
+        :title="mainButtonText"
+        @submit="mainButtonClicked"
+        :color="buttonColor"
+    />
+  </div>
 </template>
