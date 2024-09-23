@@ -189,7 +189,7 @@ const share = () => {
 </script>
 
 <template>
-  <main class="pt-20 min-h-screen h-screen flex flex-col overflow-y-visible">
+  <main class="pt-20 min-h-screen h-screen flex flex-col overflow-y-auto">
     <div class="flex-1">
       <div class="flex flex-col">
     <Header/>
@@ -331,14 +331,15 @@ const share = () => {
       <Loader v-else/>
 
     </transition>
+
+      </div>
+    </div>
     <MainButton
         :is-fixed="true"
         :title="mainButtonText"
         @submit="mainButtonClicked"
         :color="buttonColor"
     />
-      </div>
-    </div>
   </main>
 
 </template>
