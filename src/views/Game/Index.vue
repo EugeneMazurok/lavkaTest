@@ -189,10 +189,9 @@ const share = () => {
 </script>
 
 <template>
-  <div class="overflow-hidden">
-    <Header/>
-  <main class=" min-h-[100vh] pt-20 flex flex-col overflow-y-auto h-screen">
 
+  <main class=" min-h-[100vh] pt-20 flex flex-col overflow-y-auto h-screen">
+    <Header/>
 
     <transition name="fade" appear>
 
@@ -331,13 +330,12 @@ const share = () => {
       <Loader v-else/>
 
     </transition>
-
-  </main>
     <MainButton
         :is-fixed="true"
         :title="mainButtonText"
         @submit="mainButtonClicked"
         :color="buttonColor"
     />
-  </div>
+  </main>
+
 </template>
