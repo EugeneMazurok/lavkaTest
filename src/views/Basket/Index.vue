@@ -345,8 +345,8 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="min-h-screen flex flex-col" style="touch-action: pan-y; -ms-touch-action: pan-y;">
-    <div class="flex-1 overflow-y-auto" style="touch-action: pan-y; -ms-touch-action: pan-y;">
+  <main class="min-h-screen h-screen flex flex-col overflow-y-auto" style="touch-action: pan-y; -ms-touch-action: pan-y;">
+    <div class="flex-1" style="touch-action: pan-y; -ms-touch-action: pan-y;">
       <div class="flex flex-col">
         <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
           <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
