@@ -395,7 +395,7 @@ const manualeMode = async () => {
             </div>
             <!-- Поле ввода Email -->
             <div class="space-y-2">
-              <input
+              <textarea
                   id="email-input"
                   ref="emailInputRef"
                   v-model="otherData.mail"
