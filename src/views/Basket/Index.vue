@@ -350,17 +350,14 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="flex flex-col h-screen min-h-screen">
-    <!-- Header Корзины -->
-    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center text-xl font-medium">
+  <main class="main-container flex flex-col">
+    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed-element inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center text-xl font-medium">
       <h2>Корзина</h2>
       <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
     </div>
 
-    <!-- Основной контент -->
-    <div class="flex-1 overflow-y-auto">
-      <!-- Кнопка Назад -->
-      <div v-if="!webapp.initDataUnsafe.user" class="px-4 py-2">
+    <div class="flex-1 overflow-y-auto px-4">
+      <div v-if="!webapp.initDataUnsafe.user" class="py-2">
         <button @click="back" class="flex items-center gap-x-1 bg-blue text-white rounded-xl px-4 py-2 font-medium">
           <Icon icon="ion:chevron-back-outline" />
           <span>Назад</span>
@@ -368,9 +365,8 @@ const manualeMode = async () => {
       </div>
 
       <transition name="fade" appear>
-        <div class="px-4 flex flex-col gap-y-4">
-          <!-- Заказы -->
-          <div v-if="basketStore.orders && basketStore.orders.length > 0 " class="mt-16 space-y-4" v-auto-animate>
+        <div class="flex flex-col gap-y-4 mt-16">
+          <div v-if="basketStore.orders && basketStore.orders.length > 0" class="space-y-4" v-auto-animate>
             <Item
                 v-for="(el, index) in basketStore.orders"
                 :key="index"
@@ -379,13 +375,11 @@ const manualeMode = async () => {
             />
           </div>
 
-          <!-- Форма для Email -->
           <div class="relative space-y-6">
             <hr class="border-hint_color" />
 
-            <!-- Чекбокс -->
             <div>
-              <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex justify-between items-center w-full text-start gap-x-2 pr-1.5">
+              <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex justify-between items-center w-full gap-x-2 pr-1.5">
                 <span class="font-medium">У меня нет аккаунта</span>
                 <span class="w-8 h-8 bg-white shadow-sm rounded-lg overflow-hidden">
                   <span v-if="otherData.checkbox" class="flex justify-center items-center w-full h-full bg-gradient-to-b from-[#6BF792] to-[#36A254] rounded-lg">
@@ -396,7 +390,6 @@ const manualeMode = async () => {
               <p class="text-sm text-hint_color mt-1 w-4/5">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
             </div>
 
-            <!-- Поле ввода Email -->
             <div class="space-y-2">
               <input
                   id="email-input"
@@ -411,7 +404,6 @@ const manualeMode = async () => {
               />
               <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
 
-              <!-- Кнопка Подтверждения -->
               <MainButton
                   :title="mainButtonText"
                   :color="buttonColor"
@@ -421,16 +413,6 @@ const manualeMode = async () => {
               />
             </div>
           </div>
-
-          <!-- Заглушка для режима OFF -->
-          <transition name="fade">
-            <div v-if="start_params?.sale === 'OFF'" class="absolute inset-0 flex justify-center items-center bg-[#373737] bg-opacity-90 backdrop-blur-sm border border-hint_color rounded-xl">
-              <div class="text-center space-y-4">
-                <h3 class="font-medium">Проводятся технические работы</h3>
-                <span class="text-sm text-hint_color">Мы скоро вернёмся и обязательно оповестим в чате</span>
-              </div>
-            </div>
-          </transition>
         </div>
       </transition>
     </div>
