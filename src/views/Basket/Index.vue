@@ -368,7 +368,7 @@ const manualeMode = async () => {
       </div>
 
       <transition name="fade" appear>
-        <div class="px-4 flex flex-col gap-y-4">
+        <div class="px-4 flex flex-col gap-y-4 overflow-y-hidden">
           <div v-if="basketStore.orders && basketStore.orders.length > 0 " class="mt-16 space-y-4" v-auto-animate>
             <Item
                 v-for="(el, index) in basketStore.orders"
