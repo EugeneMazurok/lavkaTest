@@ -54,7 +54,6 @@ onMounted(async () => {
   // }
 
   if (init) {
-    webapp.disableVerticalSwipes();
     webapp.setBackgroundColor('#181818');
     webapp.setHeaderColor('#181818');
     webapp.expand();

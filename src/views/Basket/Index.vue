@@ -349,7 +349,7 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="flex flex-col h-screen min-h-screen">
+  <main class="flex flex-col h-screen">
 
     <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center  text-xl font-medium">
       <h2>Корзина</h2>
@@ -393,28 +393,20 @@ const manualeMode = async () => {
             </div>
             <!-- Поле ввода Email -->
             <div class="space-y-2">
-<!--              <input-->
-<!--                  id="email-input"-->
-<!--                  ref="emailInputRef"-->
-<!--                  v-model="otherData.mail"-->
-<!--                  :class="['bg-hint_bg_color placeholder:text-hint_color border', notValidEmail.error ? 'border-red' : 'border-transparent', 'px-4 py-3 rounded-xl w-full outline-none']"-->
-<!--                  @blur="handleBlur"-->
-<!--                  @focus="handleFocus"-->
-<!--                  @keyup.enter="(e) => e.target.blur()"-->
-<!--                  type="text"-->
-<!--                  placeholder="Введите e-mail для чека"-->
-<!--              />-->
+              <input
+                  id="email-input"
+                  ref="emailInputRef"
+                  v-model="otherData.mail"
+                  :class="['bg-hint_bg_color placeholder:text-hint_color border', notValidEmail.error ? 'border-red' : 'border-transparent', 'px-4 py-3 rounded-xl w-full outline-none']"
+                  @blur="handleBlur"
+                  @focus="handleFocus"
+                  @keyup.enter="(e) => e.target.blur()"
+                  type="text"
+                  placeholder="Введите e-mail для чека"
+              />
+
               <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
 
-              <el-input id="email-input"
-                        ref="emailInputRef"
-                        v-model="otherData.mail"
-                        :class="['bg-hint_bg_color placeholder:text-hint_color border', notValidEmail.error ? 'border-red' : 'border-transparent', 'px-4 py-3 rounded-xl w-full outline-none']"
-                        @blur="handleBlur"
-                        @focus="handleFocus"
-                        @keyup.enter="(e) => e.target.blur()"
-                        type="text"
-                        placeholder="Введите e-mail для чека"></el-input>
               <MainButton
                   :title="mainButtonText"
                   :color="buttonColor"
