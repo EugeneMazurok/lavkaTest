@@ -114,7 +114,8 @@ onDeactivated(() => {
 const screenHeight = ref(window.innerHeight)
 
 const updateHeight = () => {
-  screenHeight.value = window.visualViewport?.height || window.innerHeight;
+  console.log("Dsfds")
+  // screenHeight.value = window.visualViewport?.height || window.innerHeight;
 };
 
 const mainButtonText = ref('Оформить заказ')
