@@ -352,7 +352,7 @@ const manualeMode = async () => {
 <template>
   <main class="flex flex-col h-screen min-h-screen">
     <!-- Header Корзины -->
-    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center text-xl font-medium">
+    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="absolute inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center text-xl font-medium">
       <h2>Корзина</h2>
       <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
     </div>
@@ -374,7 +374,6 @@ const manualeMode = async () => {
                 v-for="(el, index) in basketStore.orders"
                 :key="index"
                 :product="el"
-                :sale_prices="start_params.sale_prices"
             />
           </div>
 
@@ -395,7 +394,7 @@ const manualeMode = async () => {
             </div>
             <!-- Поле ввода Email -->
             <div class="space-y-2">
-              <textarea
+              <input
                   id="email-input"
                   ref="emailInputRef"
                   v-model="otherData.mail"
@@ -404,7 +403,6 @@ const manualeMode = async () => {
                   @focus="handleFocus"
                   @keyup.enter="(e) => e.target.blur()"
                   type="text"
-                  :autofocus = "true"
                   placeholder="Введите e-mail для чека"
               />
               <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
