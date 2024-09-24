@@ -352,7 +352,7 @@ const manualeMode = async () => {
 <template>
   <main class="flex flex-col h-screen min-h-screen">
 
-    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center text-xl font-medium">
+    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center  text-xl font-medium" style="--safe-area-inset-top: 0px">
       <h2>Корзина</h2>
       <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
     </div>
