@@ -358,7 +358,7 @@ const manualeMode = async () => {
     </div>
 
     <!-- Основной контент -->
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-hidden">
       <!-- Кнопка Назад -->
       <div v-if="!webapp.initDataUnsafe.user" class="px-4 py-2">
         <button @click="back" class="flex items-center gap-x-1 bg-blue text-white rounded-xl px-4 py-2 font-medium">
@@ -368,7 +368,7 @@ const manualeMode = async () => {
       </div>
 
       <transition name="fade" appear>
-        <div class="px-4 flex flex-col gap-y-4 overflow-y-hidden">
+        <div class="px-4 flex flex-col gap-y-4 overflow-y-auto">
           <div v-if="basketStore.orders && basketStore.orders.length > 0 " class="mt-16 space-y-4" v-auto-animate>
             <Item
                 v-for="(el, index) in basketStore.orders"
