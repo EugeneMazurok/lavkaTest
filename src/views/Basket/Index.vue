@@ -76,7 +76,7 @@ const handleDocumentClick = (event) => {
 
 onActivated(() => {
 checkBasket = watch(() => basketStore.orders.length, () => {
-  updateButtonFixedState(); // Обновляем при изменении количества товаров
+  updateButtonFixedState();
 });
   webapp.MainButton.hide();
   setMainButton()
@@ -91,7 +91,7 @@ checkBasket = watch(() => basketStore.orders.length, () => {
 
 onMounted(async () => {
 checkBasket = watch(() => basketStore.orders.length, () => {
-  updateButtonFixedState(); // Обновляем при изменении количества товаров
+  updateButtonFixedState();
 });
   setMainButton()
   await getStartParams()
@@ -166,9 +166,7 @@ const setMainButton = () => {
     }
     if (basketStore.orders.length >= 6) {
       isButtonFixed.value = true;
-      console.log("ABPBA")
     } else {
-      console.log("FALSE")
       isButtonFixed.value = false;
     }
     console.log(buttonColor.value);
@@ -352,102 +350,89 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="min-h-screen h-screen flex flex-col ">
-    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="flex flex-col gap-y-4">
-      <div class="fixed flex text-xl justify-between items-center font-medium bg-bg_color top-0 left-0 right-0 z-20 py-2 px-4">
-        <h2>Корзина</h2>
-        <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
-      </div>
+  <main class="flex flex-col h-screen min-h-screen">
+    <!-- Header Корзины -->
+    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center text-xl font-medium">
+      <h2>Корзина</h2>
+      <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
     </div>
+
+    <!-- Основной контент -->
     <div class="flex-1 overflow-y-auto">
-      <div class="flex flex-col">
-        <div v-if="!webapp.initDataUnsafe.user" class="px-4 pb-2.5">
-          <button @click="back" class="flex bg-blue w-fit pl-2 pr-4 py-1.5 rounded-xl items-center gap-x-1 font-medium">
-            <Icon icon="ion:chevron-back-outline"/>
-            <span>Назад</span>
-          </button>
-        </div>
+      <!-- Кнопка Назад -->
+      <div v-if="!webapp.initDataUnsafe.user" class="px-4 py-2">
+        <button @click="back" class="flex items-center gap-x-1 bg-blue text-white rounded-xl px-4 py-2 font-medium">
+          <Icon icon="ion:chevron-back-outline" />
+          <span>Назад</span>
+        </button>
+      </div>
 
-        <transition name="fade" appear>
-          <div class="px-4 flex flex-col gap-y-4">
-            <div v-if="basketStore.orders && basketStore.orders.length > 0" class="flex flex-col gap-y-4">
-<!--              <div class="fixed flex text-xl justify-between items-center font-medium bg-bg_color top-0 left-0 right-0 z-20 py-2 px-4">-->
-<!--                <h2>Корзина</h2>-->
-<!--                <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>-->
-<!--              </div>-->
+      <transition name="fade" appear>
+        <div class="px-4 flex flex-col gap-y-4">
+          <!-- Заказы -->
+          <div v-if="basketStore.orders && basketStore.orders.length > 0 " class="mt-16 space-y-4" v-auto-animate>
+            <Item
+                v-for="(el, index) in basketStore.orders"
+                :key="index"
+                :product="el"
+                :sale_prices="start_params.sale_prices"
+            />
+          </div>
 
-              <!-- Добавьте отступ для остального содержимого -->
-              <div class="mt-16 flex flex-col gap-y-2" v-auto-animate v-if="start_params">
-                <Item
-                    v-for="el, index in basketStore.orders"
-                    :key="index"
-                    :product="el"
-                    :sale_prices="start_params.sale_prices"
-                />
-              </div>
+          <!-- Форма для Email -->
+          <div class="relative space-y-6">
+            <hr class="border-hint_color" />
 
-              <div class="relative">
-                <div class="flex flex-col py-2 gap-y-6">
-                  <hr class="border-hint_color"/>
-
-                  <div class="flex flex-col gap-y-1">
-                    <button @click="() => otherData.checkbox = !otherData.checkbox"
-                            class="flex pr-1.5 justify-between text-start gap-x-2 items-center w-full">
-                      <span class="font-medium">У меня нет аккаунта</span>
-                      <span class="w-8 h-8 rounded-lg bg-white shadow-sm overflow-clip">
-                        <span v-if="otherData.checkbox"
-                              class="flex w-full h-full justify-center items-center from-[#6BF792] to-[#36A254] bg-gradient-to-b rounded-lg">
-                          <Icon icon="mdi:check-bold" class="text-2xl"/>
-                        </span>
-                      </span>
-                    </button>
-
-                    <p class="text-sm text-hint_color w-[80%]">Отметьте, если вам нужна помощь в создании. Это
-                      бесплатно.</p>
-                  </div>
-
-                  <div class="flex flex-col gap-y-2">
-                    <input
-                        id="email-input"
-                        :ref="emailInputRef"
-                        :class="['bg-hint_bg_color px-4 py-3 rounded-xl placeholder:text-hint_color outline-none border-[1.5px] float-left', notValidEmail.error ? 'border-red' : 'border-transparent']"
-
-                        @blur="handleBlur"
-                        v-model="otherData.mail" @keyup.enter="(e) => e.target.blur()" type="text"
-                        enterkeyhint="done"
-                        placeholder="Введите e-mail для чека"
-                        @focus="(e) => { notValidEmail.error = false; handleFocus}"
-                    />
-
-                    <span v-if="notValidEmail.error && notValidEmail.message"
-                          class="text-sm text-red">{{ notValidEmail.message }}</span>
-                    <MainButton
-                        :title="mainButtonText"
-                        :color="buttonColor"
-                        @submit="mainButtonClicked"
-                        :buttonLoader="buttonLoader"
-                        :isFixed="isButtonFixed"
-                    />
-                  </div>
-                </div>
-
-                <transition name="fade">
-                  <div v-if="start_params?.sale === 'OFF'"
-                       class="absolute p-4 flex justify-center items-center top-0 left-0 right-0 bottom-0 rounded-xl border-[1.5px] border-hint_color bg-[#373737] bg-opacity-[90%] backdrop-blur-sm">
-                    <div class="flex flex-col gap-y-4 justify-center items-center">
-                      <h3 class="font-medium text-center">Проводятся технические работы</h3>
-                      <span
-                          class="text-hint_color text-sm text-center">Мы скоро вернёмся и обязательно оповестим в чате</span>
-                    </div>
-                  </div>
-                </transition>
-              </div>
+            <!-- Чекбокс -->
+            <div>
+              <button @click="() => otherData.checkbox = !otherData.checkbox" class="flex justify-between items-center w-full text-start gap-x-2 pr-1.5">
+                <span class="font-medium">У меня нет аккаунта</span>
+                <span class="w-8 h-8 bg-white shadow-sm rounded-lg overflow-hidden">
+                  <span v-if="otherData.checkbox" class="flex justify-center items-center w-full h-full bg-gradient-to-b from-[#6BF792] to-[#36A254] rounded-lg">
+                    <Icon icon="mdi:check-bold" class="text-2xl" />
+                  </span>
+                </span>
+              </button>
+              <p class="text-sm text-hint_color mt-1 w-4/5">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
             </div>
 
-            <div v-else class="flex justify-center items-center" :style="{ height: `${screenHeight-142}px` }"/>
+            <!-- Поле ввода Email -->
+            <div class="space-y-2">
+              <input
+                  id="email-input"
+                  ref="emailInputRef"
+                  v-model="otherData.mail"
+                  :class="['bg-hint_bg_color placeholder:text-hint_color border', notValidEmail.error ? 'border-red' : 'border-transparent', 'px-4 py-3 rounded-xl w-full outline-none']"
+                  @blur="handleBlur"
+                  @focus="handleFocus"
+                  @keyup.enter="(e) => e.target.blur()"
+                  type="text"
+                  placeholder="Введите e-mail для чека"
+              />
+              <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
+
+              <!-- Кнопка Подтверждения -->
+              <MainButton
+                  :title="mainButtonText"
+                  :color="buttonColor"
+                  @submit="mainButtonClicked"
+                  :buttonLoader="buttonLoader"
+                  :isFixed="isButtonFixed"
+              />
+            </div>
           </div>
-        </transition>
-      </div>
+
+          <!-- Заглушка для режима OFF -->
+          <transition name="fade">
+            <div v-if="start_params?.sale === 'OFF'" class="absolute inset-0 flex justify-center items-center bg-[#373737] bg-opacity-90 backdrop-blur-sm border border-hint_color rounded-xl">
+              <div class="text-center space-y-4">
+                <h3 class="font-medium">Проводятся технические работы</h3>
+                <span class="text-sm text-hint_color">Мы скоро вернёмся и обязательно оповестим в чате</span>
+              </div>
+            </div>
+          </transition>
+        </div>
+      </transition>
     </div>
   </main>
 </template>
