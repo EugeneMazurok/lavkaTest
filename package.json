@@ -12,7 +12,6 @@
     "@directus/sdk": "^16.0.2",
     "@formkit/auto-animate": "^0.8.2",
     "@headlessui/vue": "^1.7.22",
-    "@rollup/rollup-darwin-arm64": "^4.21.1",
     "axios": "^1.7.2",
     "element-plus": "^2.8.3",
     "lodash": "^4.17.21",
