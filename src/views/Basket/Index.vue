@@ -404,6 +404,7 @@ const manualeMode = async () => {
                   @focus="handleFocus"
                   @keyup.enter="(e) => e.target.blur()"
                   type="text"
+                  :autofocus = "true"
                   placeholder="Введите e-mail для чека"
               />
               <span v-if="notValidEmail.error && notValidEmail.message" class="text-sm text-red">{{ notValidEmail.message }}</span>
