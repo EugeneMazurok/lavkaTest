@@ -350,9 +350,9 @@ const manualeMode = async () => {
 </script>
 
 <template>
-  <main class="flex flex-col h-screen min-h-screen relative">
+  <main class="flex flex-col h-screen min-h-screen">
     <!-- Header Корзины -->
-    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="sticky top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center text-xl font-medium">
+    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center text-xl font-medium">
       <h2>Корзина</h2>
       <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
     </div>
@@ -374,11 +374,12 @@ const manualeMode = async () => {
                 v-for="(el, index) in basketStore.orders"
                 :key="index"
                 :product="el"
+                :sale_prices="start_params.sale_prices"
             />
           </div>
 
           <!-- Форма для Email -->
-          <div class="relative space-y-6 pb-24"> <!-- Увеличенный отступ снизу для инпута и кнопок -->
+          <div class="relative space-y-6">
             <hr class="border-hint_color" />
             <!-- Чекбокс -->
             <div>
@@ -392,7 +393,6 @@ const manualeMode = async () => {
               </button>
               <p class="text-sm text-hint_color mt-1 w-4/5">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
             </div>
-
             <!-- Поле ввода Email -->
             <div class="space-y-2">
               <input
@@ -415,7 +415,6 @@ const manualeMode = async () => {
                   @submit="mainButtonClicked"
                   :buttonLoader="buttonLoader"
                   :isFixed="isButtonFixed"
-              class="absolute bottom-0 left-0 w-full px-4 py-3 bg-blue text-white"
               />
             </div>
           </div>
