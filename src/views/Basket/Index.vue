@@ -352,14 +352,13 @@ const manualeMode = async () => {
 <template>
   <main class="flex flex-col h-screen">
 
-    <!-- Фиксированная корзина и итоговая сумма -->
     <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center  text-xl font-medium">
       <h2>Корзина</h2>
       <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
     </div>
 
     <!-- Основной контент -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 overflow-y-auto">
       <!-- Кнопка Назад -->
       <div v-if="!webapp.initDataUnsafe.user" class="px-4 py-2">
         <button @click="back" class="flex items-center gap-x-1 bg-blue text-white rounded-xl px-4 py-2 font-medium">
@@ -369,9 +368,8 @@ const manualeMode = async () => {
       </div>
 
       <transition name="fade" appear>
-        <div class="flex-1 overflow-y-auto px-4 flex flex-col gap-y-4 mt-16">
-          <!-- Прокручиваемый блок с товарами -->
-          <div v-if="basketStore.orders && basketStore.orders.length > 0" class="space-y-4" v-auto-animate>
+        <div class="px-4 flex flex-col gap-y-4 overflow-y-hidden">
+          <div v-if="basketStore.orders && basketStore.orders.length > 0 " class="mt-16 space-y-4" v-auto-animate>
             <Item
                 v-for="(el, index) in basketStore.orders"
                 :key="index"
@@ -394,7 +392,6 @@ const manualeMode = async () => {
               </button>
               <p class="text-sm text-hint_color mt-1 w-4/5">Отметьте, если вам нужна помощь в создании. Это бесплатно.</p>
             </div>
-
             <!-- Поле ввода Email -->
             <div class="space-y-2">
               <input
