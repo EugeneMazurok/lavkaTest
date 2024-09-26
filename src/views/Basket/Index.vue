@@ -65,14 +65,6 @@ const getStartParams = async () => {
   start_params.value = response
 }
 
-const handleDocumentClick = (event) => {
-  const target = event.target;
-  if (emailInputRef.value && !emailInputRef.value.contains(target)) {
-    console.log("fdsfds")
-    emailInputRef.blur();
-  }
-};
-
 onActivated(() => {
 checkBasket = watch(() => basketStore.orders.length, () => {
   updateButtonFixedState();
@@ -352,7 +344,7 @@ const manualeMode = async () => {
 <template>
   <main class="flex flex-col h-screen">
 
-    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center  text-xl font-medium">
+    <div v-if="basketStore.orders && basketStore.orders.length > 0" class="fixed inset-x-0 top-0 z-20 bg-bg_color py-2 px-4 flex justify-between items-center  text-xl font-medium " style="transform: translateZ(0);">
       <h2>Корзина</h2>
       <span>{{ finalPrice && finalPrice.toLocaleString('ru-RU') }} ₽</span>
     </div>
