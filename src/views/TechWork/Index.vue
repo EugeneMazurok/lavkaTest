@@ -1,5 +1,5 @@
 <script setup>
-const logoSrc = "../../src/assets/logo.png";
+import logoSrc from "../../assets/logo.png"
 </script>
 
 <template>
