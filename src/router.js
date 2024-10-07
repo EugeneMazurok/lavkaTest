@@ -27,8 +27,8 @@ export default createRouter({
         },
         {
             path: '/',
-            component: TechWork,
-            name: 'TECHWORK'
+            component: Index,
+            name: 'MAIN'
         },
         {
             path: '/info',
