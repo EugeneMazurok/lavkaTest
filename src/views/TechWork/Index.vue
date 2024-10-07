@@ -1,6 +1,5 @@
 <script setup>
 const logoSrc = "../assets/logo.png";
-export default TechWork
 </script>
 
 <template>
