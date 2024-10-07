@@ -1,44 +1,47 @@
 <script setup>
-const logoSrc = "../assets/logo.png";
+const logoSrc = "src/assets/logo.png";
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen items-center justify-center bg-gray-100">
-
-    <div class="absolute top-4 left-4">
-      <img :src="logoSrc" alt="Logo" class="w-16 h-16" />
+  <div class="flex flex-col min-h-screen items-center justify-center bg-bg_color"> <!-- Добавлены отступы -->
+    <!-- Логотип в левом верхнем углу -->
+    <div class="absolute top-5 left-5 h-12"> <!-- Заменено на h-12 для высоты 50px -->
+      <img :src="logoSrc" alt="Logo" class="h-full w-auto" /> <!-- Установлены классы для логотипа -->
     </div>
 
-    <div class="text-center">
-      <h1 class="text-2xl font-semibold mb-4 text-gray-800">Проводятся технические работы</h1>
+    <!-- Сообщение по центру -->
+    <div class="text-center px-10">
+      <h1 class="text-3xl font-semibold mb-4">На сайте идут технические работы</h1>
 
-      <div class="mt-6 space-y-4">
+      <!-- Новая надпись -->
+      <h2 class="text-lg font-medium mb-4 mt-10">Наши социальные сети</h2>
 
+      <!-- Кнопки в столбик -->
+      <div class="mt-6 flex flex-col space-y-4 px-10">
         <a
-            href="https://t.me/yourchannel"
+            href="https://t.me/lavka_games"
             target="_blank"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition-colors duration-200"
+            class="bg-gradient-to-r from-green to-blue text-white font-bold py-6 px-4 rounded-2xl transition-colors duration-200 text-xl"
         >
-          Telegram
+          Лавка Telegram
         </a>
 
         <a
-            href="https://instagram.com/yourprofile"
+            href="https://vk.com/lavka_xbox"
             target="_blank"
-            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-full transition-colors duration-200"
+            class="bg-green text-white font-bold py-6 px-4 rounded-2xl transition-colors duration-200 text-xl"
         >
-          Instagram
+          Лавка Xbox ВК
         </a>
 
         <a
-            href="https://twitter.com/yourprofile"
+            href="https://vk.com/lavka_playstation"
             target="_blank"
-            class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full transition-colors duration-200"
+            class="bg-blue text-white font-bold py-6 px-4 rounded-2xl transition-colors duration-200 text-xl"
         >
-          Twitter
+          Лавка Xbox ВК
         </a>
       </div>
     </div>
   </div>
 </template>
-

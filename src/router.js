@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"
 import Index from './views/Index/Index.vue'
+import TechWork from './views/TechWork/Index.vue'
 
 export default createRouter({
     history: createWebHistory(),
@@ -26,8 +27,8 @@ export default createRouter({
         },
         {
             path: '/',
-            component: Index,
-            name: 'INDEX'
+            component: TechWork,
+            name: 'TECHWORK'
         },
         {
             path: '/info',

@@ -19,7 +19,7 @@ export default {
         "card_bg_color": "#333333",
         "red": "#F45555",
         "green": "#5AAD5D",
-        "blue": "#4556E7"
+        "blue": "#2E60E7"
       }
     },
   },

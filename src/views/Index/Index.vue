@@ -12,7 +12,7 @@ import Subscriptions from '../../components/Index/Subscriptions/Container.vue'
 import Games from '../../components/Index/Games/Container.vue'
 import Donations from '../../components/Index/Donations/Container.vue'
 import OtherContainer from '../../components/Index/Donations/OtherContainer.vue'
-import TechWork from '../../views/TechWork/Index.vue'
+
 import scrollDown from "../../utils/scrollDown.js";
 
 const webapp = window.Telegram.WebApp;
@@ -84,7 +84,7 @@ onActivated(() => {
 
 <template>
     <main ref="scrollableElement" @scroll="logCurrentScrollPosition" class="overflow-y-auto h-screen pt-20 flex flex-col">
-      <TechWork style="z-index: 1000"></TechWork>
+
           <Header />
 
           <div v-if="!loading && activeTab">
