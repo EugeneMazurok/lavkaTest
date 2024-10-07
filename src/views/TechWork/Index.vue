@@ -39,7 +39,7 @@ import logoSrc from "../../assets/logo.png"
             target="_blank"
             class="bg-blue text-white font-bold py-6 px-4 rounded-2xl transition-colors duration-200 text-xl"
         >
-          Лавка Xbox ВК
+          Лавка PS ВК
         </a>
       </div>
     </div>
