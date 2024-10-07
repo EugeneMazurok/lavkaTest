@@ -267,7 +267,7 @@ const share = () => {
                             </span>
                         </span>
           </button>
-
+          
           <div class="carousel carousel-center w-full px-4 space-x-2">
             <Tab
                 v-for="{ variants_id: el }, index in activeTab.subscribe === 'For new users' ? product.prices_slot_1 : product.prices_slot_2"
