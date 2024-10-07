@@ -1,12 +1,12 @@
 <script setup>
-const logoSrc = "../src/assets/logo.png";
+const logoSrc = "src/assets/logo.png";
 </script>
 
 <template>
   <div class="flex flex-col min-h-screen items-center justify-center bg-bg_color overflow-y-hiddenw"> <!-- Добавлены отступы -->
     <!-- Логотип в левом верхнем углу -->
     <div class="absolute top-5 left-5 h-12"> <!-- Заменено на h-12 для высоты 50px -->
-      <img :src="logoSrc" alt="Logo" class="h-full w-auto" /> <!-- Установлены классы для логотипа -->
+      <img :src=logoSrc alt="Logo" class="h-full w-auto" /> <!-- Установлены классы для логотипа -->
     </div>
 
     <!-- Сообщение по центру -->
